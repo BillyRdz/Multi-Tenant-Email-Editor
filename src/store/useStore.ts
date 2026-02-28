@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   activePartnerId: 'partnerpulse_active_partner',
   activeComponentIds: 'partnerpulse_active_components',
   raCardData: 'partnerpulse_ra_card_data',
+  raCards: 'partnerpulse_ra_cards',
 };
 
 function loadFromStorage<T>(key: string, fallback: T): T {
@@ -36,7 +37,7 @@ const defaultRACardData: RACardData = {
 };
 
 export function useStore() {
-  const [partners] = useState<PartnerTheme[]>(() =>
+  const [partners, setPartners] = useState<PartnerTheme[]>(() =>
     loadFromStorage(STORAGE_KEYS.partners, defaultPartners)
   );
   const [components, setComponents] = useState<EmailComponent[]>(() =>
@@ -54,6 +55,27 @@ export function useStore() {
   const [raCardData, setRACardData] = useState<RACardData>(() =>
     loadFromStorage(STORAGE_KEYS.raCardData, defaultRACardData)
   );
+  const [raCards, setRACards] = useState<RACardData[]>(() =>
+    loadFromStorage(STORAGE_KEYS.raCards, [
+      defaultRACardData,
+      {
+        name: 'Sakura Sushi',
+        rating: 4.8,
+        milesAway: 0.8,
+        message: 'Authentic Japanese cuisine with the freshest fish flown in daily.',
+        ctaLink: 'https://example.com/order-sushi',
+        imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=480&h=320&fit=crop',
+      },
+      {
+        name: 'Taco Loco',
+        rating: 4.2,
+        milesAway: 2.1,
+        message: 'Street-style tacos and burritos made with love. Try our famous Al Pastor!',
+        ctaLink: 'https://example.com/order-tacos',
+        imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=480&h=320&fit=crop',
+      },
+    ])
+  );
 
   // Persist to localStorage on change
   useEffect(() => saveToStorage(STORAGE_KEYS.partners, partners), [partners]);
@@ -62,6 +84,7 @@ export function useStore() {
   useEffect(() => saveToStorage(STORAGE_KEYS.activePartnerId, activePartnerId), [activePartnerId]);
   useEffect(() => saveToStorage(STORAGE_KEYS.activeComponentIds, activeComponentIds), [activeComponentIds]);
   useEffect(() => saveToStorage(STORAGE_KEYS.raCardData, raCardData), [raCardData]);
+  useEffect(() => saveToStorage(STORAGE_KEYS.raCards, raCards), [raCards]);
 
   const activePartner = partners.find(p => p.id === activePartnerId) || partners[0];
 
@@ -104,6 +127,19 @@ export function useStore() {
     setActiveComponentIds(newOrder);
   }, []);
 
+  // RA Cards management
+  const addRACard = useCallback((card: RACardData) => {
+    setRACards(prev => [...prev, card]);
+  }, []);
+
+  const updateRACard = useCallback((index: number, card: RACardData) => {
+    setRACards(prev => prev.map((c, i) => (i === index ? card : c)));
+  }, []);
+
+  const removeRACard = useCallback((index: number) => {
+    setRACards(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
   // Version management
   const saveVersion = useCallback((name: string) => {
     const version: EmailVersion = {
@@ -112,11 +148,12 @@ export function useStore() {
       partnerId: activePartnerId,
       componentIds: [...activeComponentIds],
       raCardData: { ...raCardData },
+      raCards: raCards.map(c => ({ ...c })),
       createdAt: new Date().toISOString(),
     };
     setVersions(prev => [...prev, version]);
     return version;
-  }, [activePartnerId, activeComponentIds, raCardData]);
+  }, [activePartnerId, activeComponentIds, raCardData, raCards]);
 
   const loadVersion = useCallback((versionId: string) => {
     const version = versions.find(v => v.id === versionId);
@@ -124,11 +161,39 @@ export function useStore() {
     setActivePartnerId(version.partnerId);
     setActiveComponentIds(version.componentIds);
     if (version.raCardData) setRACardData(version.raCardData);
+    if (version.raCards) setRACards(version.raCards);
   }, [versions]);
 
   const deleteVersion = useCallback((id: string) => {
     setVersions(prev => prev.filter(v => v.id !== id));
   }, []);
+
+  // Partner CRUD
+  const createPartner = useCallback((partner: PartnerTheme) => {
+    setPartners(prev => [...prev, partner]);
+    setActivePartnerId(partner.id);
+  }, []);
+
+  const updatePartner = useCallback((id: string, updates: Partial<PartnerTheme>) => {
+    setPartners(prev =>
+      prev.map(p => (p.id === id ? { ...p, ...updates } : p))
+    );
+  }, []);
+
+  const deletePartner = useCallback((id: string) => {
+    setPartners(prev => {
+      const filtered = prev.filter(p => p.id !== id);
+      if (filtered.length === 0) return prev; // don't delete last partner
+      return filtered;
+    });
+    setActivePartnerId(prev => {
+      if (prev === id) {
+        const remaining = partners.filter(p => p.id !== id);
+        return remaining[0]?.id || prev;
+      }
+      return prev;
+    });
+  }, [partners]);
 
   return {
     partners,
@@ -138,8 +203,12 @@ export function useStore() {
     activePartnerId,
     activeComponentIds,
     raCardData,
+    raCards,
     setActivePartnerId,
     setRACardData,
+    addRACard,
+    updateRACard,
+    removeRACard,
     createComponent,
     updateComponent,
     deleteComponent,
@@ -148,5 +217,8 @@ export function useStore() {
     saveVersion,
     loadVersion,
     deleteVersion,
+    createPartner,
+    updatePartner,
+    deletePartner,
   };
 }

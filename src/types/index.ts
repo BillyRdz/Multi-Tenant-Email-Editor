@@ -49,5 +49,6 @@ export interface EmailVersion {
   partnerId: string;
   componentIds: string[];
   raCardData?: RACardData;
+  raCards?: RACardData[];
   createdAt: string;
 }

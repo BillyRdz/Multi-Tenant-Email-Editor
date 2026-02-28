@@ -8,6 +8,7 @@ import { RACardEditor } from './components/RACardEditor';
 import { VersionManager } from './components/VersionManager';
 import { ExportPanel } from './components/ExportPanel';
 import { ThemeInspector } from './components/ThemeInspector';
+import { PartnerEditor } from './components/PartnerEditor';
 
 function App() {
   const store = useStore();
@@ -18,9 +19,10 @@ function App() {
         store.components,
         store.activeComponentIds,
         store.activePartner,
-        store.raCardData
+        store.raCardData,
+        store.raCards
       ),
-    [store.components, store.activeComponentIds, store.activePartner, store.raCardData]
+    [store.components, store.activeComponentIds, store.activePartner, store.raCardData, store.raCards]
   );
 
   return (
@@ -34,11 +36,20 @@ function App() {
             </h1>
             <span className="text-xs text-gray-400 shrink-0">Email Design System Manager</span>
           </div>
-          <PartnerSwitcher
-            partners={store.partners}
-            activePartnerId={store.activePartnerId}
-            onSelect={store.setActivePartnerId}
-          />
+          <div className="flex items-center gap-4 flex-wrap">
+            <PartnerSwitcher
+              partners={store.partners}
+              activePartnerId={store.activePartnerId}
+              onSelect={store.setActivePartnerId}
+            />
+            <PartnerEditor
+              partners={store.partners}
+              activePartnerId={store.activePartnerId}
+              onUpdatePartner={store.updatePartner}
+              onCreatePartner={store.createPartner}
+              onDeletePartner={store.deletePartner}
+            />
+          </div>
         </div>
       </header>
 
@@ -57,8 +68,10 @@ function App() {
               onReorder={store.reorderActiveComponents}
             />
             <RACardEditor
-              data={store.raCardData}
-              onChange={store.setRACardData}
+              cards={store.raCards}
+              onAdd={store.addRACard}
+              onUpdate={store.updateRACard}
+              onRemove={store.removeRACard}
             />
           </aside>
 

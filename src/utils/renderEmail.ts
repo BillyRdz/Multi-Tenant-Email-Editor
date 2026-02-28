@@ -50,14 +50,23 @@ export function renderFullEmail(
   components: EmailComponent[],
   activeComponentIds: string[],
   theme: PartnerTheme,
-  raCardData: RACardData
+  raCardData: RACardData,
+  raCards?: RACardData[]
 ): string {
   const orderedComponents = activeComponentIds
     .map(id => components.find(c => c.id === id))
     .filter((c): c is EmailComponent => c !== undefined);
 
   const bodyHtml = orderedComponents
-    .map(comp => renderComponent(comp, theme, raCardData))
+    .map(comp => {
+      if (comp.type === 'ra-card' && raCards && raCards.length > 0) {
+        // Render one RA card for each entry
+        return raCards
+          .map(card => renderComponent(comp, theme, card))
+          .join('\n');
+      }
+      return renderComponent(comp, theme, raCardData);
+    })
     .join('\n');
 
   return `<!DOCTYPE html>

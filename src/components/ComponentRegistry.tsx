@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { EmailComponent } from '../types';
 
 interface Props {
@@ -27,6 +27,8 @@ export function ComponentRegistry({
   const [newName, setNewName] = useState('');
   const [newType, setNewType] = useState<EmailComponent['type']>('custom');
   const [newHtml, setNewHtml] = useState('');
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const dragItemId = useRef<string | null>(null);
 
   const handleCreate = () => {
     if (!newName.trim() || !newHtml.trim()) return;
@@ -45,6 +47,35 @@ export function ComponentRegistry({
     if (swapIdx < 0 || swapIdx >= newIds.length) return;
     [newIds[idx], newIds[swapIdx]] = [newIds[swapIdx], newIds[idx]];
     onReorder(newIds);
+  };
+
+  const handleDragStart = (id: string) => {
+    dragItemId.current = id;
+  };
+
+  const handleDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    setDragOverId(id);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    setDragOverId(null);
+    const sourceId = dragItemId.current;
+    if (!sourceId || sourceId === targetId) return;
+    const newIds = [...activeComponentIds];
+    const sourceIdx = newIds.indexOf(sourceId);
+    const targetIdx = newIds.indexOf(targetId);
+    if (sourceIdx === -1 || targetIdx === -1) return;
+    newIds.splice(sourceIdx, 1);
+    newIds.splice(targetIdx, 0, sourceId);
+    onReorder(newIds);
+    dragItemId.current = null;
+  };
+
+  const handleDragEnd = () => {
+    setDragOverId(null);
+    dragItemId.current = null;
   };
 
   const orderedActive = activeComponentIds
@@ -98,24 +129,33 @@ export function ComponentRegistry({
         </div>
       )}
 
-      {/* Active components (ordered) */}
+      {/* Active components (ordered, draggable) */}
       <div className="space-y-1">
-        <p className="text-xs text-gray-500 font-medium">Active (in order)</p>
+        <p className="text-xs text-gray-500 font-medium">Active (drag to reorder)</p>
         {orderedActive.map((comp, idx) => (
-          <ComponentItem
+          <div
             key={comp.id}
-            comp={comp}
-            isActive={true}
-            isEditing={editingId === comp.id}
-            canMoveUp={idx > 0}
-            canMoveDown={idx < orderedActive.length - 1}
-            onToggle={() => onToggle(comp.id)}
-            onEdit={() => setEditingId(editingId === comp.id ? null : comp.id)}
-            onUpdate={onUpdate}
-            onDelete={() => onDelete(comp.id)}
-            onMoveUp={() => moveComponent(comp.id, 'up')}
-            onMoveDown={() => moveComponent(comp.id, 'down')}
-          />
+            draggable
+            onDragStart={() => handleDragStart(comp.id)}
+            onDragOver={e => handleDragOver(e, comp.id)}
+            onDrop={e => handleDrop(e, comp.id)}
+            onDragEnd={handleDragEnd}
+            className={`transition-all ${dragOverId === comp.id ? 'ring-2 ring-indigo-400 ring-offset-1' : ''}`}
+          >
+            <ComponentItem
+              comp={comp}
+              isActive={true}
+              isEditing={editingId === comp.id}
+              canMoveUp={idx > 0}
+              canMoveDown={idx < orderedActive.length - 1}
+              onToggle={() => onToggle(comp.id)}
+              onEdit={() => setEditingId(editingId === comp.id ? null : comp.id)}
+              onUpdate={onUpdate}
+              onDelete={() => onDelete(comp.id)}
+              onMoveUp={() => moveComponent(comp.id, 'up')}
+              onMoveDown={() => moveComponent(comp.id, 'down')}
+            />
+          </div>
         ))}
       </div>
 
@@ -183,6 +223,9 @@ function ComponentItem({
   return (
     <div className={`rounded-lg border ${isActive ? 'border-indigo-200 bg-white' : 'border-gray-200 bg-gray-50 opacity-60'}`}>
       <div className="flex items-center gap-2 px-3 py-2">
+        {isActive && (
+          <span className="cursor-grab text-gray-400 hover:text-gray-600 select-none" title="Drag to reorder">⠿</span>
+        )}
         <input
           type="checkbox"
           checked={isActive}
