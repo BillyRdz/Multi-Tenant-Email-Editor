@@ -1,4 +1,53 @@
-export interface PartnerTheme {
+export interface StyleToken {
+  key: string;
+  value: string;
+}
+
+export interface Partner {
+  id: string;
+  name: string;
+  slug: string;
+  tokens: StyleToken[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EmailComponent {
+  id: string;
+  name: string;
+  type: string;
+  html: string;
+  detectedVariables: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CanvasInstance {
+  id: string;
+  componentId: string;
+  contentValues: Record<string, string>;
+  order: number;
+}
+
+export interface CanvasState {
+  id: string;
+  name: string;
+  partnerId: string;
+  instances: CanvasInstance[];
+  previewWrapper: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EmailVersion {
+  id: string;
+  name: string;
+  canvasState: CanvasState;
+  createdAt: string;
+}
+
+// Legacy types for migration
+export interface LegacyPartnerTheme {
   id: string;
   name: string;
   slug: string;
@@ -9,8 +58,8 @@ export interface PartnerTheme {
     lineHeight: number;
   };
   textDecoration: {
-    textTransform: 'uppercase' | 'lowercase' | 'capitalize' | 'none';
-    textDecoration: 'underline' | 'none';
+    textTransform: string;
+    textDecoration: string;
   };
   colors: {
     primary: string;
@@ -23,32 +72,4 @@ export interface PartnerTheme {
     borderRadius: number;
     borderStrokeWeight: number;
   };
-}
-
-export interface EmailComponent {
-  id: string;
-  name: string;
-  type: 'header' | 'body' | 'ra-card' | 'footer' | 'cta' | 'custom';
-  html: string; // template literal string with ${theme.xxx} placeholders
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface RACardData {
-  name: string;
-  rating: number;
-  milesAway: number;
-  message: string;
-  ctaLink: string;
-  imageUrl: string;
-}
-
-export interface EmailVersion {
-  id: string;
-  name: string;
-  partnerId: string;
-  componentIds: string[];
-  raCardData?: RACardData;
-  raCards?: RACardData[];
-  createdAt: string;
 }

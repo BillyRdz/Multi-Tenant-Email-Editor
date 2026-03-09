@@ -1,1 +1,69 @@
 @import "tailwindcss";
+
+:root {
+  --bg-primary: #0f1117;
+  --bg-secondary: #1a1d27;
+  --bg-tertiary: #242731;
+  --bg-elevated: #2a2d3a;
+  --bg-hover: #323545;
+  --border-primary: #2e3142;
+  --border-secondary: #3d4058;
+  --text-primary: #e4e6eb;
+  --text-secondary: #a0a3b1;
+  --text-tertiary: #6b6f80;
+  --accent-primary: #6366f1;
+  --accent-primary-hover: #818cf8;
+  --accent-danger: #ef4444;
+  --accent-danger-hover: #f87171;
+  --accent-success: #22c55e;
+  --accent-warning: #f59e0b;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Custom input styling for dark theme */
+input[type="text"],
+input[type="number"],
+input[type="url"],
+textarea,
+select {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
