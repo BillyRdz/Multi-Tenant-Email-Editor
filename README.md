@@ -30,7 +30,7 @@ A visual email editor for building and previewing multi-brand email templates wi
 - Zustand (state management)
 - Monaco Editor (code editing)
 - Lucide React (icons)
-- Vitest + Testing Library + axe-core (110 tests)
+- Vitest + Testing Library + axe-core (123 tests)
 - GitHub Actions (lint, test, build, deploy to GitHub Pages)
 
 ## Getting Started
@@ -45,7 +45,7 @@ Open [http://localhost:5173](http://localhost:5173).
 ## Testing
 
 ```bash
-npm test        # 110 unit and component tests
+npm test        # 123 unit and component tests
 npm run lint    # ESLint, including the React hooks rules
 npm run build   # type check and production build
 ```
