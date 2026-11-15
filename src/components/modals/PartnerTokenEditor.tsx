@@ -103,7 +103,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
             onChange={e => updateToken(idx, 'key', e.target.value)}
             placeholder="tokenKey"
             aria-label={`Token ${idx + 1} key`}
-            className="text-xs font-mono"
+            className="min-w-0 w-full text-xs font-mono"
             style={{
               backgroundColor: 'var(--bg-primary)',
               border: `1px solid ${duplicateIndices.has(idx) ? 'var(--accent-danger)' : 'var(--border-primary)'}`,
@@ -112,7 +112,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
               padding: '4px 8px',
             }}
           />
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 min-w-0">
             {isColorValue(token.value) && (
               <input
                 type="color"
@@ -129,7 +129,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
               onChange={e => updateToken(idx, 'value', e.target.value)}
               placeholder="value"
               aria-label={`${token.key || `Token ${idx + 1}`} value`}
-              className="flex-1 text-xs font-mono"
+              className="flex-1 min-w-0 text-xs font-mono"
               style={{
                 backgroundColor: 'var(--bg-primary)',
                 border: '1px solid var(--border-primary)',

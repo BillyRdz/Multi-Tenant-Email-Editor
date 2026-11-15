@@ -34,12 +34,12 @@ export function DeveloperModeModal({ isOpen, onClose, components, onCreate, onUp
     >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={onClose} />
       <div
-        className="relative w-full max-w-5xl max-h-[90vh] flex rounded-xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-5xl max-h-[90vh] flex flex-col md:flex-row rounded-xl shadow-2xl overflow-y-auto md:overflow-hidden"
         style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-primary)' }}
       >
         {/* Sidebar: Component list */}
         <div
-          className="w-72 shrink-0 border-r flex flex-col"
+          className="w-full md:w-72 shrink-0 border-b md:border-b-0 md:border-r flex flex-col"
           style={{ borderColor: 'var(--border-primary)' }}
         >
           <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: 'var(--border-primary)' }}>
@@ -95,7 +95,7 @@ export function DeveloperModeModal({ isOpen, onClose, components, onCreate, onUp
         </div>
 
         {/* Main: Editor */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 min-w-0 md:overflow-y-auto">
           {creating ? (
             <ComponentEditor
               key="new"

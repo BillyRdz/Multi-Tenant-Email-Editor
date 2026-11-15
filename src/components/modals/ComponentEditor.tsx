@@ -41,14 +41,14 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
   return (
     <div className="flex flex-col h-full">
       {/* Top bar */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b" style={{ borderColor: 'var(--border-primary)' }}>
+      <div className="flex flex-wrap items-center gap-3 px-4 py-3 border-b" style={{ borderColor: 'var(--border-primary)' }}>
         <input
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Component name"
           aria-label="Component name"
-          className="text-sm font-medium flex-1"
+          className="text-sm font-medium flex-1 min-w-0"
           style={{
             backgroundColor: 'var(--bg-tertiary)',
             border: '1px solid var(--border-primary)',

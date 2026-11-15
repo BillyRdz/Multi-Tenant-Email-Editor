@@ -30,7 +30,7 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
             value={versionName}
             onChange={e => setVersionName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSave()}
-            className="flex-1 text-sm"
+            className="flex-1 min-w-0 text-sm"
             style={{
               backgroundColor: 'var(--bg-tertiary)',
               border: '1px solid var(--border-primary)',
@@ -42,7 +42,7 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
           <button
             onClick={handleSave}
             disabled={!versionName.trim()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer disabled:opacity-40"
+            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer disabled:opacity-40"
             style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
           >
             <Save size={14} />

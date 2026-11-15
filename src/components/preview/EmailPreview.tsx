@@ -62,6 +62,7 @@ export function EmailPreview({ html }: Props) {
           className="bg-white shadow-lg transition-all duration-300"
           style={{
             width: viewMode === 'desktop' ? '620px' : '375px',
+            maxWidth: '100%',
             height: '100%',
             minHeight: '500px',
             border: 'none',

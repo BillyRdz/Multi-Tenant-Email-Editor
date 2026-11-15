@@ -72,7 +72,7 @@ function App() {
 
   // Header
   const header = (
-    <div className="max-w-[1800px] mx-auto px-4 py-3 flex items-center gap-4">
+    <div className="max-w-[1800px] mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
       <h1 className="text-base font-bold shrink-0" style={{ color: 'var(--text-primary)' }}>
         PartnerPulse
       </h1>
