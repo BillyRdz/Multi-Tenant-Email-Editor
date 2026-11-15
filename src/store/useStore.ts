@@ -55,17 +55,17 @@ function getDefaultContentValues(comp: EmailComponent): Record<string, string> {
 
 function getDefaultValueForVariable(varName: string): string {
   const map: Record<string, string> = {
-    headline: 'Your order is on its way!',
-    bodyText: 'Great news! Your food is being prepared and will arrive soon. Track your order in the app for real-time updates.',
-    ctaText: 'Track Your Order',
+    headline: 'Earn 5x on dining this weekend',
+    bodyText: 'Pay with your linked card at participating restaurants through Sunday. The bonus posts to your account automatically.',
+    ctaText: 'Find Restaurants',
     ctaLink: '#',
-    restaurantName: 'Bella Italia',
+    restaurantName: 'Paloma Cantina',
     restaurantRating: '★★★★½',
     restaurantDistance: '1.2 mi away',
-    restaurantMessage: 'Fresh pasta made daily with locally sourced ingredients. Try our new summer menu!',
-    restaurantCtaLink: 'https://example.com/order',
+    restaurantMessage: 'Wood-fired Tex-Mex and a long mezcal list. The bonus applies to dine-in and takeout.',
+    restaurantCtaLink: 'https://example.com/restaurants',
     restaurantImage: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=480&h=320&fit=crop',
-    copyrightText: '© 2025 Partner. All rights reserved.',
+    copyrightText: '© 2026 Example Rewards. All rights reserved.',
     unsubscribeLink: '#',
     privacyLink: '#',
   };

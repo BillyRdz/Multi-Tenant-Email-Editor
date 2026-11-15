@@ -81,7 +81,7 @@ const componentData: Omit<EmailComponent, 'detectedVariables'>[] = [
               <tr>
                 <td>
                   <a href="%%=v(@restaurantCtaLink)=%%" style="display: inline-block; background-color: %%=v(@colorPrimary)=%%; color: %%=v(@colorBackground)=%%; font-family: %%=v(@fontFamily)=%%; font-size: 14px; font-weight: %%=v(@fontWeightBold)=%%; text-decoration: none; padding: 10px 24px; border-radius: %%=v(@borderRadius)=%%px; text-transform: %%=v(@textTransform)=%%;">
-                    Order Now
+                    View Restaurant
                   </a>
                 </td>
               </tr>
@@ -126,7 +126,7 @@ const componentData: Omit<EmailComponent, 'detectedVariables'>[] = [
     <td align="center" style="padding: 24px 16px;">
       <table width="600" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td style="font-family: %%=v(@fontFamily)=%%; font-size: 12px; color: %%=v(@colorBackground)=%%; text-align: center; line-height: %%=v(@lineHeight)=%%; opacity: 0.8;">
+          <td style="font-family: %%=v(@fontFamily)=%%; font-size: 12px; color: %%=v(@colorBackground)=%%; text-align: center; line-height: %%=v(@lineHeight)=%%;">
             <p style="margin: 0 0 8px 0;">%%=v(@copyrightText)=%%</p>
             <p style="margin: 0;">
               <a href="%%=v(@unsubscribeLink)=%%" style="color: %%=v(@colorBackground)=%%; text-decoration: %%=v(@textDecoration)=%%;">Unsubscribe</a> &nbsp;|&nbsp;

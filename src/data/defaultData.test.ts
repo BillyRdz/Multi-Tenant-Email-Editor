@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { defaultPartners } from './defaultPartners';
 import { defaultComponents } from './defaultComponents';
 import { defaultPreviewWrapper } from './defaultPreviewWrapper';
+import { checkPartnerContrast } from '../utils/contrast';
 
 describe('defaultPartners', () => {
   it('has 17 partners', () => {
@@ -30,6 +31,20 @@ describe('defaultPartners', () => {
       expect(nameToken).toBeDefined();
       expect(nameToken!.value).toBe(p.name);
     }
+  });
+
+  it('every sample palette meets WCAG AA contrast for the default components', () => {
+    for (const p of defaultPartners) {
+      const failing = checkPartnerContrast(p.tokens)
+        .filter(r => !r.passes)
+        .map(r => `${p.name}: ${r.label} is ${r.ratio?.toFixed(2) ?? 'unknown'}:1`);
+      expect(failing).toEqual([]);
+    }
+  });
+
+  it('partner ids and slugs are unique', () => {
+    expect(new Set(defaultPartners.map(p => p.id)).size).toBe(defaultPartners.length);
+    expect(new Set(defaultPartners.map(p => p.slug)).size).toBe(defaultPartners.length);
   });
 });
 
