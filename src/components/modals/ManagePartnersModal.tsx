@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import type { Partner, StyleToken } from '../../types';
 import { PartnerTokenEditor } from './PartnerTokenEditor';
+import { useModalDialog } from '../../hooks/useModalDialog';
 import { X, Plus, Users } from 'lucide-react';
 
 interface Props {
@@ -26,6 +27,8 @@ export function ManagePartnersModal({
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [newTokens, setNewTokens] = useState<StyleToken[]>([]);
+  const dialogRef = useModalDialog(isOpen, onClose);
+  const titleId = useId();
 
   if (!isOpen) return null;
 
@@ -42,7 +45,14 @@ export function ManagePartnersModal({
     partner.tokens.find(t => t.key === 'colorPrimary')?.value || '#6366f1';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      ref={dialogRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={onClose} />
       <div
         className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-xl shadow-2xl overflow-hidden"
@@ -51,11 +61,11 @@ export function ManagePartnersModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-primary)' }}>
           <div className="flex items-center gap-2">
-            <Users size={18} style={{ color: 'var(--accent-primary)' }} />
-            <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Manage Partners</span>
+            <Users size={18} style={{ color: 'var(--accent-text)' }} />
+            <h2 id={titleId} className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Manage Partners</h2>
             <span className="text-xs ml-2" style={{ color: 'var(--text-tertiary)' }}>{partners.length} partners</span>
           </div>
-          <button onClick={onClose} className="cursor-pointer p-1 rounded" style={{ color: 'var(--text-tertiary)' }}>
+          <button onClick={onClose} aria-label="Close manage partners" className="cursor-pointer p-1 rounded" style={{ color: 'var(--text-tertiary)' }}>
             <X size={18} />
           </button>
         </div>
@@ -74,6 +84,7 @@ export function ManagePartnersModal({
               {/* Partner header row */}
               <button
                 onClick={() => setExpandedId(expandedId === partner.id ? null : partner.id)}
+                aria-expanded={expandedId === partner.id}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer transition-colors"
                 style={{ color: 'var(--text-primary)' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--bg-hover)')}
@@ -87,7 +98,7 @@ export function ManagePartnersModal({
                 <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
                   {partner.tokens.length} tokens
                 </span>
-                <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                <span aria-hidden="true" className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
                   {expandedId === partner.id ? '▼' : '▶'}
                 </span>
               </button>
@@ -103,7 +114,7 @@ export function ManagePartnersModal({
                     <button
                       onClick={() => { onDeletePartner(partner.id); setExpandedId(null); }}
                       className="text-xs cursor-pointer"
-                      style={{ color: 'var(--accent-danger)' }}
+                      style={{ color: 'var(--accent-danger-text)' }}
                     >
                       Delete Partner
                     </button>
@@ -124,6 +135,7 @@ export function ManagePartnersModal({
                 value={newName}
                 onChange={e => setNewName(e.target.value)}
                 placeholder="New partner name"
+                aria-label="New partner name"
                 className="w-full text-sm"
                 autoFocus
               />

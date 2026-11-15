@@ -25,7 +25,7 @@ describe('useStore', () => {
   it('initializes with default partners', () => {
     const state = useStore.getState();
     expect(state.partners.length).toBeGreaterThan(0);
-    expect(state.partners[0].name).toBe('Grubhub');
+    expect(state.partners[0].name).toBe('Kestrel Air');
   });
 
   it('initializes with default components', () => {

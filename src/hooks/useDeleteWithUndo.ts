@@ -26,16 +26,17 @@ export function useDeleteWithUndo(store: StoreFunctions) {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const pendingConfig = useRef<DeleteConfig | null>(null);
+  // The pending delete drives the modal's title and message, so it lives in state.
+  const [pending, setPending] = useState<DeleteConfig | null>(null);
   const undoSnapshot = useRef<Partial<StoreSnapshot> | null>(null);
 
   const requestDelete = useCallback((config: DeleteConfig) => {
-    pendingConfig.current = config;
+    setPending(config);
     setModalOpen(true);
   }, []);
 
   const handleConfirm = useCallback(() => {
-    const config = pendingConfig.current;
+    const config = pending;
     if (!config) return;
 
     let snapshot: Partial<StoreSnapshot> = {};
@@ -73,10 +74,10 @@ export function useDeleteWithUndo(store: StoreFunctions) {
     setModalOpen(false);
     setToastMessage(`Deleted "${config.label}"`);
     setToastVisible(true);
-  }, [store]);
+  }, [store, pending]);
 
   const handleCancel = useCallback(() => {
-    pendingConfig.current = null;
+    setPending(null);
     setModalOpen(false);
   }, []);
 
@@ -95,11 +96,9 @@ export function useDeleteWithUndo(store: StoreFunctions) {
 
   const modalProps = {
     isOpen: modalOpen,
-    title: pendingConfig.current
-      ? `Delete ${pendingConfig.current.label}?`
-      : 'Confirm Delete',
-    message: pendingConfig.current
-      ? `Are you sure you want to delete "${pendingConfig.current.label}"? You can undo this action briefly after confirming.`
+    title: pending ? `Delete ${pending.label}?` : 'Confirm Delete',
+    message: pending
+      ? `Are you sure you want to delete "${pending.label}"? You can undo this action briefly after confirming.`
       : '',
     onConfirm: handleConfirm,
     onCancel: handleCancel,

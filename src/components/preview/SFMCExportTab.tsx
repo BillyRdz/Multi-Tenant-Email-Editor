@@ -59,6 +59,7 @@ export function SFMCExportTab({ instances, components, partner, previewWrapper }
           </button>
           <button
             onClick={() => setMinify(!minify)}
+            aria-pressed={minify}
             className="flex items-center gap-2 py-2 px-3 text-sm rounded-md cursor-pointer transition-colors"
             style={{
               backgroundColor: minify ? 'var(--accent-warning)' : 'var(--bg-tertiary)',
@@ -72,6 +73,7 @@ export function SFMCExportTab({ instances, components, partner, previewWrapper }
         </div>
         <button
           onClick={() => setShowSource(!showSource)}
+          aria-expanded={showSource}
           className="flex items-center gap-2 w-full py-1.5 text-xs cursor-pointer"
           style={{ color: 'var(--text-tertiary)' }}
         >
@@ -80,6 +82,9 @@ export function SFMCExportTab({ instances, components, partner, previewWrapper }
         </button>
         {showSource && (
           <pre
+            tabIndex={0}
+            role="region"
+            aria-label="Export source"
             className="p-4 rounded-lg text-xs overflow-auto max-h-64 font-mono"
             style={{
               backgroundColor: 'var(--bg-primary)',

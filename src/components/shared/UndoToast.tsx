@@ -49,7 +49,7 @@ export function UndoToast({ message, onUndo, duration = 5000, onDismiss }: UndoT
           type="button"
           onClick={handleUndo}
           className="flex items-center gap-1 font-semibold shrink-0 cursor-pointer transition-colors"
-          style={{ color: 'var(--accent-primary)' }}
+          style={{ color: 'var(--accent-text)' }}
         >
           <Undo2 size={14} />
           Undo

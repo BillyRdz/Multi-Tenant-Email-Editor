@@ -28,6 +28,7 @@ export function EmailPreview({ html }: Props) {
         <div className="flex gap-1 ml-auto">
           <button
             onClick={() => setViewMode('desktop')}
+            aria-pressed={viewMode === 'desktop'}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
             style={{
               backgroundColor: viewMode === 'desktop' ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
@@ -39,6 +40,7 @@ export function EmailPreview({ html }: Props) {
           </button>
           <button
             onClick={() => setViewMode('mobile')}
+            aria-pressed={viewMode === 'mobile'}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
             style={{
               backgroundColor: viewMode === 'mobile' ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
@@ -60,6 +62,7 @@ export function EmailPreview({ html }: Props) {
           className="bg-white shadow-lg transition-all duration-300"
           style={{
             width: viewMode === 'desktop' ? '620px' : '375px',
+            maxWidth: '100%',
             height: '100%',
             minHeight: '500px',
             border: 'none',

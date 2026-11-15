@@ -26,10 +26,11 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
           <input
             type="text"
             placeholder="e.g. Summer Promo v2"
+            aria-label="Version name"
             value={versionName}
             onChange={e => setVersionName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSave()}
-            className="flex-1 text-sm"
+            className="flex-1 min-w-0 text-sm"
             style={{
               backgroundColor: 'var(--bg-tertiary)',
               border: '1px solid var(--border-primary)',
@@ -41,7 +42,7 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
           <button
             onClick={handleSave}
             disabled={!versionName.trim()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer disabled:opacity-40"
+            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer disabled:opacity-40"
             style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
           >
             <Save size={14} />
@@ -65,16 +66,18 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
                 <button
                   onClick={() => onLoad(v.id)}
                   className="cursor-pointer p-1 rounded transition-colors"
-                  style={{ color: 'var(--accent-primary)' }}
+                  style={{ color: 'var(--accent-text)' }}
                   title="Load version"
+                  aria-label={`Load version ${v.name}`}
                 >
                   <Upload size={14} />
                 </button>
                 <button
                   onClick={() => onDelete(v.id)}
                   className="cursor-pointer p-1 rounded transition-colors"
-                  style={{ color: 'var(--accent-danger)' }}
+                  style={{ color: 'var(--accent-danger-text)' }}
                   title="Delete version"
+                  aria-label={`Delete version ${v.name}`}
                 >
                   <Trash2 size={14} />
                 </button>

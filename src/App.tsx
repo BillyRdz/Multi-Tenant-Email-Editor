@@ -72,7 +72,7 @@ function App() {
 
   // Header
   const header = (
-    <div className="max-w-[1800px] mx-auto px-4 py-3 flex items-center gap-4">
+    <div className="max-w-[1800px] mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
       <h1 className="text-base font-bold shrink-0" style={{ color: 'var(--text-primary)' }}>
         PartnerPulse
       </h1>
@@ -109,6 +109,7 @@ function App() {
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
           style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: '1px solid var(--border-primary)' }}
           title="Settings"
+          aria-label="Settings"
         >
           <SettingsIcon size={14} />
         </button>
@@ -122,6 +123,7 @@ function App() {
       <ComponentLibrary
         components={store.components}
         onDragStart={() => {}}
+        onAdd={store.addInstance}
       />
       <Inspector
         instance={selectedInstance}

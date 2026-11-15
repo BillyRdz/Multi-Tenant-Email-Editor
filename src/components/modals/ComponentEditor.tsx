@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import type { EmailComponent } from '../../types';
 import { extractVariables, classifyVariables } from '../../utils/templateEngine';
 import { defaultPartners } from '../../data/defaultPartners';
@@ -17,17 +17,11 @@ interface EditorProps {
 }
 
 export function ComponentEditor({ component, onSave, onCreate, onDelete, onCancel }: EditorProps) {
+  // Local draft of the component. DeveloperModeModal gives this editor a `key`
+  // per component, so switching components remounts it with fresh state.
   const [name, setName] = useState(component?.name || '');
   const [type, setType] = useState(component?.type || 'custom');
   const [html, setHtml] = useState(component?.html || '');
-
-  useEffect(() => {
-    if (component) {
-      setName(component.name);
-      setType(component.type);
-      setHtml(component.html);
-    }
-  }, [component]);
 
   const detectedVars = extractVariables(html);
   const tokenKeys = defaultPartners[0]?.tokens.map(t => t.key) || [];
@@ -47,13 +41,14 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
   return (
     <div className="flex flex-col h-full">
       {/* Top bar */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b" style={{ borderColor: 'var(--border-primary)' }}>
+      <div className="flex flex-wrap items-center gap-3 px-4 py-3 border-b" style={{ borderColor: 'var(--border-primary)' }}>
         <input
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Component name"
-          className="text-sm font-medium flex-1"
+          aria-label="Component name"
+          className="text-sm font-medium flex-1 min-w-0"
           style={{
             backgroundColor: 'var(--bg-tertiary)',
             border: '1px solid var(--border-primary)',
@@ -65,6 +60,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
         <select
           value={type}
           onChange={e => setType(e.target.value)}
+          aria-label="Component type"
           className="text-sm"
           style={{
             backgroundColor: 'var(--bg-tertiary)',
@@ -98,8 +94,9 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
         {!isNew && onDelete && (
           <button
             onClick={onDelete}
+            aria-label="Delete component"
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer"
-            style={{ color: 'var(--accent-danger)' }}
+            style={{ color: 'var(--accent-danger-text)' }}
           >
             <Trash2 size={14} />
           </button>
@@ -113,7 +110,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           <span
             key={v}
             className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff', opacity: 0.7 }}
+            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
           >
             {v} (style)
           </span>
@@ -122,7 +119,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           <span
             key={v}
             className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-success)', color: '#fff', opacity: 0.8 }}
+            style={{ backgroundColor: 'var(--accent-success)', color: 'var(--bg-primary)' }}
           >
             {v} (content)
           </span>

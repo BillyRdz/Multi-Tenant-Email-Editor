@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
+import { useModalDialog } from '../../hooks/useModalDialog';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -27,24 +28,24 @@ function generateMathProblem(): { question: string; answer: number } {
   };
 }
 
-export function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }: ConfirmModalProps) {
-  const [userAnswer, setUserAnswer] = useState('');
-
-  const problem = useMemo(() => {
-    if (isOpen) return generateMathProblem();
-    return { question: '', answer: 0 };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) setUserAnswer('');
-  }, [isOpen]);
-
+export function ConfirmModal({ isOpen, ...dialogProps }: ConfirmModalProps) {
+  // The dialog mounts fresh each time it opens, which clears the answer and
+  // picks a new math problem without resetting state in an effect.
   if (!isOpen) return null;
+  return <ConfirmDialog {...dialogProps} />;
+}
+
+function ConfirmDialog({ title, message, onConfirm, onCancel }: Omit<ConfirmModalProps, 'isOpen'>) {
+  const [userAnswer, setUserAnswer] = useState('');
+  const [problem] = useState(generateMathProblem);
+  const dialogRef = useModalDialog(true, onCancel);
 
   const isCorrect = userAnswer.trim() !== '' && parseInt(userAnswer.trim(), 10) === problem.answer;
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       className="fixed inset-0 z-[100] flex items-center justify-center"
       role="dialog"
       aria-modal="true"
@@ -96,7 +97,7 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }: Co
               if (e.key === 'Enter' && isCorrect) onConfirm();
             }}
             placeholder="Your answer"
-            autoFocus
+            data-autofocus
             className="w-full text-sm rounded-md px-3 py-2"
             style={{
               backgroundColor: 'var(--bg-primary)',

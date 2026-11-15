@@ -1,13 +1,14 @@
 import type { EmailComponent } from '../../types';
-import { GripVertical } from 'lucide-react';
+import { GripVertical, Plus } from 'lucide-react';
 
 interface Props {
   component: EmailComponent;
   badgeColor: string;
   onDragStart: () => void;
+  onAdd: () => void;
 }
 
-export function ComponentCard({ component, badgeColor, onDragStart }: Props) {
+export function ComponentCard({ component, badgeColor, onDragStart, onAdd }: Props) {
   return (
     <div
       draggable
@@ -37,6 +38,17 @@ export function ComponentCard({ component, badgeColor, onDragStart }: Props) {
       <span className="text-xs shrink-0" style={{ color: 'var(--text-tertiary)' }}>
         {component.detectedVariables.length} vars
       </span>
+      {/* Dragging needs a mouse. This button does the same thing from the keyboard or a touch screen. */}
+      <button
+        type="button"
+        onClick={onAdd}
+        aria-label={`Add ${component.name} to canvas`}
+        title="Add to canvas"
+        className="shrink-0 p-1 rounded cursor-pointer"
+        style={{ color: 'var(--accent-text)' }}
+      >
+        <Plus size={14} />
+      </button>
     </div>
   );
 }
