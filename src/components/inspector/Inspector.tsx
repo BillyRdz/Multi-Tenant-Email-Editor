@@ -15,7 +15,7 @@ export function Inspector({ instance, component, partner, onUpdateContent }: Pro
     return (
       <Panel title="Inspector">
         <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-          Select a canvas block to edit its content variables.
+          Select a block in the canvas or the preview to edit its content.
         </p>
       </Panel>
     );
@@ -28,7 +28,7 @@ export function Inspector({ instance, component, partner, onUpdateContent }: Pro
     <Panel title={`Inspector: ${component.name}`}>
       {contentVars.length === 0 ? (
         <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-          This component has no content variables — only style tokens.
+          This block uses only style tokens, so it has no content to edit.
         </p>
       ) : (
         <div className="space-y-3">

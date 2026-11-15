@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import type { CanvasInstance, EmailComponent, Partner } from '../../types';
 import { renderForSFMC, minifyHtml } from '../../utils/templateEngine';
 import { Panel } from '../layout/Panel';
-import { Copy, Check, Code, FileCode } from 'lucide-react';
+import { Copy, Check, ChevronRight, ChevronDown } from 'lucide-react';
 
 interface Props {
   instances: CanvasInstance[];
@@ -42,42 +42,36 @@ export function SFMCExportTab({ instances, components, partner, previewWrapper }
   return (
     <Panel title="SFMC Export">
       <div className="space-y-3">
-        <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-          Style tokens are replaced. Content variables remain as {'%%=v(@variable)=%%'} for SFMC personalization.
+        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+          Style tokens are replaced with {partner.name}'s values. Content variables stay as{' '}
+          <span className="font-mono">{'%%=v(@variable)=%%'}</span> for SFMC personalization.
         </p>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={handleCopy}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-sm rounded-md cursor-pointer transition-colors"
-            style={{
-              backgroundColor: 'var(--accent-primary)',
-              color: '#fff',
-            }}
+            className="flex items-center gap-2 rounded px-3 py-1.5 text-sm font-semibold"
+            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
-            {copied ? 'Copied!' : 'Copy HTML'}
+            {copied ? 'Copied' : 'Copy HTML'}
           </button>
-          <button
-            onClick={() => setMinify(!minify)}
-            aria-pressed={minify}
-            className="flex items-center gap-2 py-2 px-3 text-sm rounded-md cursor-pointer transition-colors"
-            style={{
-              backgroundColor: minify ? 'var(--accent-warning)' : 'var(--bg-tertiary)',
-              color: minify ? '#000' : 'var(--text-secondary)',
-              border: '1px solid var(--border-primary)',
-            }}
-          >
-            <FileCode size={14} />
-            {minify ? 'Minified' : 'Minify'}
-          </button>
+          <label className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--text-primary)' }}>
+            <input
+              type="checkbox"
+              checked={minify}
+              onChange={e => setMinify(e.target.checked)}
+              style={{ accentColor: 'var(--accent-primary)' }}
+            />
+            Minify
+          </label>
         </div>
         <button
           onClick={() => setShowSource(!showSource)}
           aria-expanded={showSource}
-          className="flex items-center gap-2 w-full py-1.5 text-xs cursor-pointer"
-          style={{ color: 'var(--text-tertiary)' }}
+          className="flex items-center gap-1 rounded text-xs"
+          style={{ color: 'var(--text-secondary)' }}
         >
-          <Code size={12} />
+          {showSource ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           {showSource ? 'Hide Source' : 'View Source'}
         </button>
         {showSource && (
@@ -85,11 +79,11 @@ export function SFMCExportTab({ instances, components, partner, previewWrapper }
             tabIndex={0}
             role="region"
             aria-label="Export source"
-            className="p-4 rounded-lg text-xs overflow-auto max-h-64 font-mono"
+            className="max-h-64 overflow-auto rounded p-3 font-mono text-xs"
             style={{
               backgroundColor: 'var(--bg-primary)',
-              color: 'var(--accent-success)',
-              border: '1px solid var(--border-primary)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-input)',
             }}
           >
             {exportHtml}

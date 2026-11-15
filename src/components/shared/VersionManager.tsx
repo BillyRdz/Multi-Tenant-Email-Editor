@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { EmailVersion } from '../../types';
 import { Panel } from '../layout/Panel';
-import { Save, Upload, Trash2 } from 'lucide-react';
+import { Upload, Trash2 } from 'lucide-react';
 
 interface Props {
   versions: EmailVersion[];
@@ -21,7 +21,7 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
 
   return (
     <Panel title="Versions">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="flex gap-2">
           <input
             type="text"
@@ -30,43 +30,35 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
             value={versionName}
             onChange={e => setVersionName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSave()}
-            className="flex-1 min-w-0 text-sm"
-            style={{
-              backgroundColor: 'var(--bg-tertiary)',
-              border: '1px solid var(--border-primary)',
-              color: 'var(--text-primary)',
-              borderRadius: '6px',
-              padding: '6px 10px',
-            }}
+            className="min-w-0 flex-1"
           />
           <button
             onClick={handleSave}
             disabled={!versionName.trim()}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer disabled:opacity-40"
-            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
+            className="shrink-0 rounded px-3 py-1.5 text-sm font-semibold"
+            style={
+              versionName.trim()
+                ? { backgroundColor: 'var(--accent-primary)', color: '#fff' }
+                : { backgroundColor: 'var(--bg-hover)', color: 'var(--text-tertiary)' }
+            }
           >
-            <Save size={14} />
             Save
           </button>
         </div>
         {versions.length > 0 && (
-          <div className="space-y-1 max-h-48 overflow-y-auto">
+          <ul className="max-h-48 overflow-y-auto">
             {[...versions].reverse().map(v => (
-              <div
-                key={v.id}
-                className="flex items-center gap-2 px-3 py-2 rounded-md"
-                style={{ backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-primary)' }}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{v.name}</p>
+              <li key={v.id} className="flex items-center gap-1 py-1">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm" style={{ color: 'var(--text-primary)' }}>{v.name}</p>
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
                     {new Date(v.createdAt).toLocaleDateString()}
                   </p>
                 </div>
                 <button
                   onClick={() => onLoad(v.id)}
-                  className="cursor-pointer p-1 rounded transition-colors"
-                  style={{ color: 'var(--accent-text)' }}
+                  className="rounded p-1 hover:bg-[var(--bg-hover)]"
+                  style={{ color: 'var(--text-secondary)' }}
                   title="Load version"
                   aria-label={`Load version ${v.name}`}
                 >
@@ -74,16 +66,15 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
                 </button>
                 <button
                   onClick={() => onDelete(v.id)}
-                  className="cursor-pointer p-1 rounded transition-colors"
-                  style={{ color: 'var(--accent-danger-text)' }}
+                  className="rounded p-1 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--accent-danger-text)]"
                   title="Delete version"
                   aria-label={`Delete version ${v.name}`}
                 >
                   <Trash2 size={14} />
                 </button>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
     </Panel>

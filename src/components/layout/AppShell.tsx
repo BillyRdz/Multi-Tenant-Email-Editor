@@ -7,27 +7,37 @@ interface Props {
   right: ReactNode;
 }
 
+/**
+ * The editor frame: a toolbar, the email in the middle of the desk, and a
+ * panel on each side. On wide screens each column scrolls on its own and the
+ * page itself does not move. On narrow screens the columns stack.
+ */
 export function AppShell({ header, left, center, right }: Props) {
+  const panel = { backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-secondary)' };
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg-primary)' }}>
-      <header
-        className="sticky top-0 z-50 border-b"
-        style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}
-      >
+    <div className="min-h-screen flex flex-col lg:h-screen lg:overflow-hidden" style={{ backgroundColor: 'var(--booth)' }}>
+      <header className="sticky top-0 z-40 shrink-0 border-b lg:static" style={panel}>
         {header}
       </header>
-      <div className="flex-1 max-w-[1800px] w-full mx-auto px-4 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_320px] gap-4 h-full">
-          <aside aria-label="Component library and inspector" className="min-w-0 space-y-4 order-2 lg:order-1 overflow-y-auto lg:max-h-[calc(100vh-80px)]">
-            {left}
-          </aside>
-          <main className="min-w-0 order-1 lg:order-2 min-h-[600px]">
-            {center}
-          </main>
-          <aside aria-label="Theme, versions, and export" className="min-w-0 space-y-4 order-3 overflow-y-auto lg:max-h-[calc(100vh-80px)]">
-            {right}
-          </aside>
-        </div>
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[17rem_minmax(0,1fr)_19.5rem]">
+        <aside
+          aria-label="Component library and canvas"
+          className="min-w-0 border-b lg:border-b-0 lg:border-r lg:overflow-y-auto"
+          style={panel}
+        >
+          {left}
+        </aside>
+        <main className="min-w-0 lg:min-h-0 lg:overflow-hidden">
+          {center}
+        </main>
+        <aside
+          aria-label="Inspector, theme, versions, and export"
+          className="min-w-0 border-t lg:border-t-0 lg:border-l lg:overflow-y-auto"
+          style={panel}
+        >
+          {right}
+        </aside>
       </div>
     </div>
   );

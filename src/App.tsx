@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useStore } from './store/useStore';
 import { useDeleteWithUndo } from './hooks/useDeleteWithUndo';
-import { renderForPreview } from './utils/templateEngine';
+import { renderForPreview, wrapBlockForPreview } from './utils/templateEngine';
 import { AppShell } from './components/layout/AppShell';
 import { PartnerDropdown } from './components/library/PartnerDropdown';
 import { ComponentLibrary } from './components/library/ComponentLibrary';
@@ -34,7 +34,7 @@ function App() {
       .map(inst => {
         const comp = store.components.find(c => c.id === inst.componentId);
         if (!comp) return '';
-        return renderForPreview(comp.html, activePartner, inst.contentValues);
+        return wrapBlockForPreview(inst.id, renderForPreview(comp.html, activePartner, inst.contentValues));
       })
       .filter(Boolean)
       .join('\n');
@@ -71,25 +71,24 @@ function App() {
   }, [store.partners, requestDelete]);
 
   // Header
+  const toolbarButton = 'flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm hover:bg-[var(--bg-hover)]';
   const header = (
-    <div className="max-w-[1800px] mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-      <h1 className="text-base font-bold shrink-0" style={{ color: 'var(--text-primary)' }}>
+    <div className="flex min-h-12 flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
+      <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
         PartnerPulse
       </h1>
-      <span className="text-xs shrink-0" style={{ color: 'var(--text-tertiary)' }}>
-        Email Design System
-      </span>
-      <div className="flex-1" />
+      <span aria-hidden="true" className="h-5 w-px" style={{ backgroundColor: 'var(--border-secondary)' }} />
       <PartnerDropdown
         partners={store.partners}
         activePartnerId={store.activePartnerId}
         onSelect={store.setActivePartnerId}
       />
+      <div className="flex-1" />
       <div className="flex gap-1">
         <button
           onClick={() => setDevModeOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
-          style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: '1px solid var(--border-primary)' }}
+          className={toolbarButton}
+          style={{ color: 'var(--text-primary)' }}
           title="Developer Mode"
         >
           <Code size={14} />
@@ -97,8 +96,8 @@ function App() {
         </button>
         <button
           onClick={() => setPartnersModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
-          style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: '1px solid var(--border-primary)' }}
+          className={toolbarButton}
+          style={{ color: 'var(--text-primary)' }}
           title="Manage Partners"
         >
           <Users size={14} />
@@ -106,8 +105,8 @@ function App() {
         </button>
         <button
           onClick={() => setSettingsOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
-          style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: '1px solid var(--border-primary)' }}
+          className={toolbarButton}
+          style={{ color: 'var(--text-primary)' }}
           title="Settings"
           aria-label="Settings"
         >
@@ -117,7 +116,7 @@ function App() {
     </div>
   );
 
-  // Left panel
+  // Left: what the email is made of
   const left = (
     <>
       <ComponentLibrary
@@ -125,18 +124,6 @@ function App() {
         onDragStart={() => {}}
         onAdd={store.addInstance}
       />
-      <Inspector
-        instance={selectedInstance}
-        component={selectedComponent}
-        partner={activePartner}
-        onUpdateContent={store.updateInstanceContent}
-      />
-    </>
-  );
-
-  // Center panel
-  const center = (
-    <div className="flex flex-col gap-4 h-full">
       <Canvas
         instances={store.canvas.instances}
         components={store.components}
@@ -147,13 +134,27 @@ function App() {
         onReorder={store.reorderInstances}
         onRemoveInstance={handleRemoveInstance}
       />
-      <EmailPreview html={emailHtml} />
-    </div>
+    </>
   );
 
-  // Right panel
+  // Center: the email itself
+  const center = (
+    <EmailPreview
+      html={emailHtml}
+      selectedInstanceId={store.selectedInstanceId}
+      onSelectInstance={store.selectInstance}
+    />
+  );
+
+  // Right: the selected block, the partner's theme, and output
   const right = (
     <>
+      <Inspector
+        instance={selectedInstance}
+        component={selectedComponent}
+        partner={activePartner}
+        onUpdateContent={store.updateInstanceContent}
+      />
       <ThemeInspector partner={activePartner} />
       <VersionManager
         versions={store.versions}

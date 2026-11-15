@@ -6,6 +6,7 @@ import {
   renderForSFMC,
   minifyHtml,
   ampVar,
+  wrapBlockForPreview,
 } from './templateEngine';
 import type { Partner } from '../types';
 
@@ -153,5 +154,11 @@ describe('minifyHtml', () => {
   it('preserves AMPscript variables during minification', () => {
     const html = '  <div>%%=v(@headline)=%%</div>  ';
     expect(minifyHtml(html)).toBe('<div>%%=v(@headline)=%%</div>');
+  });
+});
+
+describe('wrapBlockForPreview', () => {
+  it('tags a block with its instance id for the preview', () => {
+    expect(wrapBlockForPreview('inst-1', '<table></table>')).toBe('<div data-instance="inst-1"><table></table></div>');
   });
 });

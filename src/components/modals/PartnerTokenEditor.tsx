@@ -90,8 +90,8 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
   return (
     <div className="space-y-2">
       <div className="grid grid-cols-[1fr_1fr_auto_auto] gap-2 items-center">
-        <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Key</span>
-        <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Value</span>
+        <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Key</span>
+        <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Value</span>
         <span />
         <span />
       </div>
@@ -103,14 +103,9 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
             onChange={e => updateToken(idx, 'key', e.target.value)}
             placeholder="tokenKey"
             aria-label={`Token ${idx + 1} key`}
-            className="min-w-0 w-full text-xs font-mono"
-            style={{
-              backgroundColor: 'var(--bg-primary)',
-              border: `1px solid ${duplicateIndices.has(idx) ? 'var(--accent-danger)' : 'var(--border-primary)'}`,
-              color: 'var(--text-primary)',
-              borderRadius: '4px',
-              padding: '4px 8px',
-            }}
+            className="min-w-0 w-full font-mono"
+            aria-invalid={duplicateIndices.has(idx) || undefined}
+            style={duplicateIndices.has(idx) ? { borderColor: 'var(--accent-danger)', boxShadow: 'inset 0 0 0 1px var(--accent-danger)' } : undefined}
           />
           <div className="flex items-center gap-1 min-w-0">
             {isColorValue(token.value) && (
@@ -119,8 +114,8 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
                 value={token.value}
                 onChange={e => updateToken(idx, 'value', e.target.value)}
                 aria-label={`${token.key || `Token ${idx + 1}`} color picker`}
-                className="w-6 h-6 rounded border cursor-pointer shrink-0"
-                style={{ borderColor: 'var(--border-primary)' }}
+                className="h-7 w-7 shrink-0 cursor-pointer rounded border bg-transparent p-0"
+                style={{ borderColor: 'var(--border-input)' }}
               />
             )}
             <input
@@ -129,22 +124,14 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
               onChange={e => updateToken(idx, 'value', e.target.value)}
               placeholder="value"
               aria-label={`${token.key || `Token ${idx + 1}`} value`}
-              className="flex-1 min-w-0 text-xs font-mono"
-              style={{
-                backgroundColor: 'var(--bg-primary)',
-                border: '1px solid var(--border-primary)',
-                color: 'var(--text-primary)',
-                borderRadius: '4px',
-                padding: '4px 8px',
-              }}
+              className="flex-1 min-w-0 font-mono"
             />
           </div>
           <span />
           <button
             onClick={() => setPendingDeleteIndex(idx)}
             aria-label={`Delete token ${token.key || idx + 1}`}
-            className="cursor-pointer p-1 rounded"
-            style={{ color: 'var(--accent-danger-text)' }}
+            className="rounded p-1 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--accent-danger-text)]"
           >
             <Trash2 size={12} />
           </button>
@@ -153,10 +140,8 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
 
       {hasDuplicates && (
         <div
-          className="flex items-center gap-2 px-3 py-2 rounded-md text-xs"
+          className="flex items-center gap-2 text-xs font-semibold"
           style={{
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid var(--accent-danger)',
             color: 'var(--accent-danger-text)',
           }}
           role="alert"
@@ -169,8 +154,8 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
       <div className="flex items-center gap-2">
         <button
           onClick={addToken}
-          className="flex items-center gap-1 text-xs cursor-pointer"
-          style={{ color: 'var(--accent-text)' }}
+          className="flex items-center gap-1 rounded text-xs font-semibold"
+          style={{ color: 'var(--text-primary)' }}
         >
           <Plus size={12} />
           Add Token
@@ -182,11 +167,11 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
           <>
             <button
               onClick={handleDiscard}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-md cursor-pointer transition-colors"
+              className="rounded px-3 py-1.5 text-xs hover:bg-[var(--bg-hover)]"
               style={{
                 backgroundColor: 'var(--bg-primary)',
-                color: 'var(--text-secondary)',
-                border: '1px solid var(--border-primary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-input)',
               }}
             >
               Discard
@@ -194,10 +179,10 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
             <button
               onClick={handleSave}
               disabled={!canSave}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-md transition-colors"
+              className="flex items-center gap-1 rounded px-3 py-1.5 text-xs font-semibold"
               style={{
-                backgroundColor: canSave ? 'var(--accent-success)' : 'var(--bg-tertiary)',
-                color: canSave ? 'var(--bg-primary)' : 'var(--text-tertiary)',
+                backgroundColor: canSave ? 'var(--accent-primary)' : 'var(--bg-hover)',
+                color: canSave ? '#fff' : 'var(--text-tertiary)',
                 cursor: canSave ? 'pointer' : 'not-allowed',
                 opacity: canSave ? 1 : 0.6,
               }}
