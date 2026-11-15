@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import type { EmailComponent } from '../../types';
 import { extractVariables, classifyVariables } from '../../utils/templateEngine';
 import { defaultPartners } from '../../data/defaultPartners';
@@ -17,17 +17,11 @@ interface EditorProps {
 }
 
 export function ComponentEditor({ component, onSave, onCreate, onDelete, onCancel }: EditorProps) {
+  // Local draft of the component. DeveloperModeModal gives this editor a `key`
+  // per component, so switching components remounts it with fresh state.
   const [name, setName] = useState(component?.name || '');
   const [type, setType] = useState(component?.type || 'custom');
   const [html, setHtml] = useState(component?.html || '');
-
-  useEffect(() => {
-    if (component) {
-      setName(component.name);
-      setType(component.type);
-      setHtml(component.html);
-    }
-  }, [component]);
 
   const detectedVars = extractVariables(html);
   const tokenKeys = defaultPartners[0]?.tokens.map(t => t.key) || [];

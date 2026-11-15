@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -27,19 +27,16 @@ function generateMathProblem(): { question: string; answer: number } {
   };
 }
 
-export function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }: ConfirmModalProps) {
-  const [userAnswer, setUserAnswer] = useState('');
-
-  const problem = useMemo(() => {
-    if (isOpen) return generateMathProblem();
-    return { question: '', answer: 0 };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) setUserAnswer('');
-  }, [isOpen]);
-
+export function ConfirmModal({ isOpen, ...dialogProps }: ConfirmModalProps) {
+  // The dialog mounts fresh each time it opens, which clears the answer and
+  // picks a new math problem without resetting state in an effect.
   if (!isOpen) return null;
+  return <ConfirmDialog {...dialogProps} />;
+}
+
+function ConfirmDialog({ title, message, onConfirm, onCancel }: Omit<ConfirmModalProps, 'isOpen'>) {
+  const [userAnswer, setUserAnswer] = useState('');
+  const [problem] = useState(generateMathProblem);
 
   const isCorrect = userAnswer.trim() !== '' && parseInt(userAnswer.trim(), 10) === problem.answer;
 
