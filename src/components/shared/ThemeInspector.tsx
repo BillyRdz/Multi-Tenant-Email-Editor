@@ -1,5 +1,6 @@
 import type { Partner } from '../../types';
 import { Panel } from '../layout/Panel';
+import { PartnerSwatch } from './PartnerSwatch';
 import { checkPartnerContrast, AA_MIN_CONTRAST } from '../../utils/contrast';
 import { Check, X, Minus } from 'lucide-react';
 
@@ -18,70 +19,79 @@ export function ThemeInspector({ partner }: Props) {
   const failing = contrast.filter(r => r.passes === false).length;
   const checked = contrast.filter(r => r.passes !== null).length;
 
+  const subheading = 'mb-1.5 text-xs font-semibold';
+  const row = 'flex items-center gap-2 py-1';
+
   return (
     <Panel title={`Theme: ${partner.name}`}>
       <div className="space-y-4 text-xs">
+        {/* The partner's palette as one strip, the way a brand sheet shows it. */}
+        <PartnerSwatch partner={partner} className="h-7 w-full" />
+
         {/* Color tokens */}
         {colorTokens.length > 0 && (
           <div>
-            <p className="font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Colors</p>
-            <div className="grid grid-cols-2 gap-2">
+            <p className={subheading} style={{ color: 'var(--text-secondary)' }}>Colors</p>
+            <ul>
               {colorTokens.map(t => (
-                <div key={t.key} className="flex items-center gap-2">
+                <li key={t.key} className={row}>
                   <span
-                    className="w-5 h-5 rounded shrink-0"
-                    style={{ backgroundColor: t.value, border: '1px solid var(--border-secondary)' }}
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 rounded-xs"
+                    style={{ backgroundColor: t.value, border: '1px solid var(--border-input)' }}
                   />
-                  <div className="min-w-0">
-                    <p style={{ color: 'var(--text-tertiary)' }} className="truncate">{t.key}</p>
-                    <p className="font-mono" style={{ color: 'var(--text-primary)' }}>{t.value}</p>
-                  </div>
-                </div>
+                  <span className="min-w-0 flex-1 truncate" style={{ color: 'var(--text-primary)' }}>{t.key}</span>
+                  <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>{t.value}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         )}
 
         {/* Contrast: does this partner's palette keep email text readable? */}
         <div>
-          <p className="font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+          <p className={subheading} style={{ color: 'var(--text-secondary)' }}>
             Contrast (WCAG AA, {AA_MIN_CONTRAST}:1)
           </p>
-          <ul className="space-y-1.5">
+          <ul>
             {contrast.map(result => (
-              <li key={result.label} className="flex items-center gap-2">
+              <li key={result.label} className={row}>
                 <span
                   aria-hidden="true"
-                  className="w-7 h-5 rounded shrink-0 flex items-center justify-center font-semibold"
+                  className="flex h-5 w-7 shrink-0 items-center justify-center rounded-xs font-semibold"
                   style={{
                     color: result.foregroundColor,
                     backgroundColor: result.backgroundColor,
-                    border: '1px solid var(--border-secondary)',
+                    border: '1px solid var(--border-input)',
                   }}
                 >
                   Aa
                 </span>
-                <span className="flex-1 min-w-0 truncate" style={{ color: 'var(--text-primary)' }}>{result.label}</span>
-                <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>
+                <span className="min-w-0 flex-1 truncate" style={{ color: 'var(--text-primary)' }}>{result.label}</span>
+                <span className="tabular" style={{ color: 'var(--text-secondary)' }}>
                   {result.ratio === null ? 'n/a' : `${result.ratio.toFixed(2)}:1`}
                 </span>
                 {result.passes === null ? (
-                  <span className="flex items-center gap-1 w-12" style={{ color: 'var(--text-tertiary)' }}>
+                  <span className="flex w-11 items-center gap-1" style={{ color: 'var(--text-tertiary)' }}>
                     <Minus size={12} /> Skip
                   </span>
                 ) : result.passes ? (
-                  <span className="flex items-center gap-1 w-12" style={{ color: 'var(--accent-success)' }}>
+                  <span className="flex w-11 items-center gap-1 font-semibold" style={{ color: 'var(--accent-success)' }}>
                     <Check size={12} /> Pass
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 w-12" style={{ color: 'var(--accent-danger-text)' }}>
+                  <span className="flex w-11 items-center gap-1 font-semibold" style={{ color: 'var(--accent-danger-text)' }}>
                     <X size={12} /> Fail
                   </span>
                 )}
               </li>
             ))}
           </ul>
-          <p className="mt-2" role="status" style={{ color: failing > 0 ? 'var(--accent-danger-text)' : 'var(--text-tertiary)' }}>
+          <p
+            className="mt-1.5"
+            role="status"
+            style={{ color: failing > 0 ? 'var(--accent-danger-text)' : 'var(--text-tertiary)' }}
+          >
             {checked === 0
               ? 'No hex color tokens to check.'
               : failing === 0
@@ -93,15 +103,15 @@ export function ThemeInspector({ partner }: Props) {
         {/* Other tokens */}
         {otherTokens.length > 0 && (
           <div>
-            <p className="font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Style Tokens</p>
-            <div className="space-y-1">
+            <p className={subheading} style={{ color: 'var(--text-secondary)' }}>Style Tokens</p>
+            <ul>
               {otherTokens.map(t => (
-                <div key={t.key} className="flex justify-between">
-                  <span style={{ color: 'var(--text-tertiary)' }}>{t.key}</span>
-                  <span className="font-mono truncate max-w-[150px]" style={{ color: 'var(--text-primary)' }}>{t.value}</span>
-                </div>
+                <li key={t.key} className="flex justify-between gap-3 py-1">
+                  <span style={{ color: 'var(--text-primary)' }}>{t.key}</span>
+                  <span className="min-w-0 truncate font-mono" style={{ color: 'var(--text-secondary)' }}>{t.value}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         )}
       </div>

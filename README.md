@@ -16,7 +16,7 @@ A visual email editor for building and previewing multi-brand email templates wi
 - **Manage Partners** — expandable token editor with color swatches, duplicate key validation, save/discard
 - **Partner contrast check** — the Theme panel tests each partner's palette against WCAG AA (4.5:1) and flags the color pairs that fail
 - **Keyboard accessible** — add, select, reorder, and remove blocks without a mouse; modals trap focus and close on Escape
-- **Dark theme** — full dark UI via CSS custom properties
+- **Neutral gray workspace** — the editor chrome is gray and ink only, so each partner's colors are the only color on screen
 - **Version Manager** — save/load named snapshots of canvas state
 - **Confirm + Undo** — math problem confirmation on all deletes, undo toast to restore
 - **Desktop/Mobile preview toggle**
@@ -30,7 +30,7 @@ A visual email editor for building and previewing multi-brand email templates wi
 - Zustand (state management)
 - Monaco Editor (code editing)
 - Lucide React (icons)
-- Vitest + Testing Library + axe-core (110 tests)
+- Vitest + Testing Library + axe-core (123 tests)
 - GitHub Actions (lint, test, build, deploy to GitHub Pages)
 
 ## Getting Started
@@ -45,7 +45,7 @@ Open [http://localhost:5173](http://localhost:5173).
 ## Testing
 
 ```bash
-npm test        # 110 unit and component tests
+npm test        # 123 unit and component tests
 npm run lint    # ESLint, including the React hooks rules
 npm run build   # type check and production build
 ```

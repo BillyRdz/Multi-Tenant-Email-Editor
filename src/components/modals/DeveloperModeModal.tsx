@@ -2,7 +2,7 @@ import { useState, useId } from 'react';
 import type { EmailComponent } from '../../types';
 import { ComponentEditor } from './ComponentEditor';
 import { useModalDialog } from '../../hooks/useModalDialog';
-import { X, Plus, Code, Variable } from 'lucide-react';
+import { X, Plus, Variable } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -32,10 +32,10 @@ export function DeveloperModeModal({ isOpen, onClose, components, onCreate, onUp
       aria-labelledby={titleId}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
-      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={onClose} />
+      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(23,25,29,0.45)' }} onClick={onClose} />
       <div
         className="relative w-full max-w-5xl max-h-[90vh] flex flex-col md:flex-row rounded-xl shadow-2xl overflow-y-auto md:overflow-hidden"
-        style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-primary)' }}
+        style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-secondary)' }}
       >
         {/* Sidebar: Component list */}
         <div
@@ -43,32 +43,30 @@ export function DeveloperModeModal({ isOpen, onClose, components, onCreate, onUp
           style={{ borderColor: 'var(--border-primary)' }}
         >
           <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: 'var(--border-primary)' }}>
-            <div className="flex items-center gap-2">
-              <Code size={16} style={{ color: 'var(--accent-text)' }} />
-              <h2 id={titleId} className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Developer Mode</h2>
-            </div>
-            <button onClick={onClose} aria-label="Close developer mode" className="cursor-pointer p-1 rounded" style={{ color: 'var(--text-tertiary)' }}>
+            <h2 id={titleId} className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Developer Mode</h2>
+            <button onClick={onClose} aria-label="Close developer mode" className="rounded p-1 hover:bg-[var(--bg-hover)]" style={{ color: 'var(--text-secondary)' }}>
               <X size={16} />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+          <div className="flex-1 overflow-y-auto p-2">
             {components.map(comp => (
               <button
                 key={comp.id}
                 onClick={() => { setEditingId(comp.id); setCreating(false); }}
                 aria-current={editingId === comp.id ? 'true' : undefined}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-left cursor-pointer transition-colors"
+                className={`flex h-8 w-full items-center gap-2 rounded px-2 text-left ${
+                  editingId === comp.id ? 'font-semibold' : 'hover:bg-[var(--bg-hover)]'
+                }`}
                 style={{
-                  backgroundColor: editingId === comp.id ? 'var(--bg-hover)' : 'transparent',
-                  color: editingId === comp.id ? 'var(--accent-text)' : 'var(--text-primary)',
+                  backgroundColor: editingId === comp.id ? 'var(--select-tint)' : undefined,
+                  boxShadow: editingId === comp.id ? 'inset 2px 0 0 var(--select)' : undefined,
+                  color: 'var(--text-primary)',
                 }}
-                onMouseEnter={e => { if (editingId !== comp.id) e.currentTarget.style.backgroundColor = 'var(--bg-hover)'; }}
-                onMouseLeave={e => { if (editingId !== comp.id) e.currentTarget.style.backgroundColor = 'transparent'; }}
               >
-                <span className="text-sm font-medium truncate flex-1">{comp.name}</span>
+                <span className="text-sm truncate flex-1">{comp.name}</span>
                 <span
-                  className="flex items-center gap-1 text-xs shrink-0"
+                  className="tabular flex items-center gap-1 text-xs font-normal shrink-0"
                   style={{ color: 'var(--text-tertiary)' }}
                   title={`${comp.detectedVariables.length} variables`}
                 >
@@ -82,7 +80,7 @@ export function DeveloperModeModal({ isOpen, onClose, components, onCreate, onUp
           <div className="p-2 border-t" style={{ borderColor: 'var(--border-primary)' }}>
             <button
               onClick={() => { setCreating(true); setEditingId(null); }}
-              className="w-full flex items-center justify-center gap-2 py-2 text-sm rounded-lg cursor-pointer"
+              className="flex w-full items-center justify-center gap-2 rounded py-1.5 text-sm font-semibold"
               style={{
                 backgroundColor: 'var(--accent-primary)',
                 color: '#fff',
@@ -118,12 +116,9 @@ export function DeveloperModeModal({ isOpen, onClose, components, onCreate, onUp
               }}
             />
           ) : (
-            <div className="flex items-center justify-center h-full" style={{ color: 'var(--text-tertiary)' }}>
-              <div className="text-center">
-                <Code size={48} className="mx-auto mb-4 opacity-30" />
-                <p className="text-sm">Select a component to edit or create a new one.</p>
-              </div>
-            </div>
+            <p className="p-6 text-sm" style={{ color: 'var(--text-secondary)' }}>
+              Pick a component on the left to edit its HTML, or create a new one.
+            </p>
           )}
         </div>
       </div>

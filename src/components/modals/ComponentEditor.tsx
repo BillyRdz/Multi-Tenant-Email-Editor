@@ -2,7 +2,7 @@ import { useState, lazy, Suspense } from 'react';
 import type { EmailComponent } from '../../types';
 import { extractVariables, classifyVariables } from '../../utils/templateEngine';
 import { defaultPartners } from '../../data/defaultPartners';
-import { Save, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then(m => ({ default: m.default })));
 
@@ -48,27 +48,12 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           onChange={e => setName(e.target.value)}
           placeholder="Component name"
           aria-label="Component name"
-          className="text-sm font-medium flex-1 min-w-0"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-primary)',
-            color: 'var(--text-primary)',
-            borderRadius: '6px',
-            padding: '6px 10px',
-          }}
+          className="min-w-0 flex-1 font-semibold"
         />
         <select
           value={type}
           onChange={e => setType(e.target.value)}
           aria-label="Component type"
-          className="text-sm"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-primary)',
-            color: 'var(--text-primary)',
-            borderRadius: '6px',
-            padding: '6px 10px',
-          }}
         >
           {COMPONENT_TYPES.map(t => (
             <option key={t} value={t}>{t}</option>
@@ -76,17 +61,16 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
         </select>
         <button
           onClick={handleSave}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer"
+          className="rounded px-3 py-1.5 text-sm font-semibold"
           style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
         >
-          <Save size={14} />
           {isNew ? 'Create' : 'Save'}
         </button>
         {isNew && onCancel && (
           <button
             onClick={onCancel}
-            className="px-3 py-1.5 text-sm rounded-md cursor-pointer"
-            style={{ color: 'var(--text-secondary)' }}
+            className="rounded px-3 py-1.5 text-sm hover:bg-[var(--bg-hover)]"
+            style={{ color: 'var(--text-primary)' }}
           >
             Cancel
           </button>
@@ -95,8 +79,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           <button
             onClick={onDelete}
             aria-label="Delete component"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer"
-            style={{ color: 'var(--accent-danger-text)' }}
+            className="rounded p-1.5 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--accent-danger-text)]"
           >
             <Trash2 size={14} />
           </button>
@@ -104,13 +87,13 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
       </div>
 
       {/* Variable chips */}
-      <div className="flex flex-wrap gap-1.5 px-4 py-2 border-b" style={{ borderColor: 'var(--border-primary)' }}>
-        <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Variables:</span>
+      <div className="flex flex-wrap items-center gap-1.5 px-4 py-2 border-b" style={{ borderColor: 'var(--border-primary)' }}>
+        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>Variables</span>
         {styleVars.map(v => (
           <span
             key={v}
-            className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
+            className="rounded-xs px-1.5 py-0.5 font-mono text-xs"
+            style={{ backgroundColor: 'var(--bg-hover)', color: 'var(--text-primary)' }}
           >
             {v} (style)
           </span>
@@ -118,14 +101,14 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
         {contentVars.map(v => (
           <span
             key={v}
-            className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-success)', color: 'var(--bg-primary)' }}
+            className="rounded-xs px-1.5 py-0.5 font-mono text-xs"
+            style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-input)' }}
           >
             {v} (content)
           </span>
         ))}
         {detectedVars.length === 0 && (
-          <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
             No variables detected. Use {'%%=v(@variableName)=%%'} syntax.
           </span>
         )}
@@ -141,7 +124,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           <MonacoEditor
             height="100%"
             language="html"
-            theme="vs-dark"
+            theme="vs"
             value={html}
             onChange={(value) => setHtml(value || '')}
             options={{

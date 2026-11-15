@@ -6,24 +6,19 @@ interface Props {
   actions?: ReactNode;
 }
 
+/** One section of a side panel: a plain heading, its content, and a divider below. */
 export function Panel({ title, children, actions }: Props) {
   return (
-    <div
-      className="rounded-lg border"
-      style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}
-    >
-      <div
-        className="flex items-center justify-between px-4 py-3 border-b"
-        style={{ borderColor: 'var(--border-primary)' }}
-      >
-        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+    <section className="border-b" style={{ borderColor: 'var(--border-primary)' }}>
+      <div className="flex items-center justify-between gap-2 px-4 pt-3.5 pb-2">
+        <h2 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           {title}
         </h2>
         {actions}
       </div>
-      <div className="p-4">
+      <div className="px-4 pb-4">
         {children}
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useId } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { Partner } from '../../types';
-import { ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
+import { PartnerSwatch } from '../shared/PartnerSwatch';
 
 interface Props {
   partners: Partner[];
@@ -84,9 +85,6 @@ export function PartnerDropdown({ partners, activePartnerId, onSelect }: Props) 
     options[next]?.focus();
   };
 
-  const getColorToken = (partner: Partner) =>
-    partner.tokens.find(t => t.key === 'colorPrimary')?.value || '#6366f1';
-
   return (
     <div ref={ref} className="relative">
       <button
@@ -98,19 +96,15 @@ export function PartnerDropdown({ partners, activePartnerId, onSelect }: Props) 
         aria-expanded={open}
         aria-controls={open ? listId : undefined}
         aria-label={`Partner: ${active?.name || 'none selected'}`}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors"
+        className="flex items-center gap-2.5 rounded py-1.5 pl-2 pr-1.5 text-sm font-semibold hover:bg-[var(--bg-hover)]"
         style={{
-          backgroundColor: 'var(--bg-tertiary)',
+          backgroundColor: open ? 'var(--bg-hover)' : undefined,
           color: 'var(--text-primary)',
-          border: '1px solid var(--border-primary)',
         }}
       >
-        <span
-          className="w-3 h-3 rounded-full shrink-0"
-          style={{ backgroundColor: active ? getColorToken(active) : '#666' }}
-        />
-        <span className="truncate max-w-[140px]">{active?.name || 'Select Partner'}</span>
-        <ChevronDown size={14} style={{ color: 'var(--text-tertiary)' }} />
+        {active && <PartnerSwatch partner={active} className="w-11 h-4" />}
+        <span className="truncate max-w-[11rem]">{active?.name || 'Select Partner'}</span>
+        <ChevronDown size={14} style={{ color: 'var(--text-secondary)' }} />
       </button>
 
       {open && (
@@ -120,38 +114,33 @@ export function PartnerDropdown({ partners, activePartnerId, onSelect }: Props) 
           role="listbox"
           aria-label="Partner"
           onKeyDown={handleListKeyDown}
-          className="absolute top-full left-0 mt-1 w-56 rounded-lg border shadow-xl z-50 overflow-hidden max-h-80 overflow-y-auto"
+          className="absolute top-full left-0 z-50 mt-1 max-h-[26rem] w-72 overflow-y-auto rounded-xl border py-1 shadow-xl"
           style={{
             backgroundColor: 'var(--bg-elevated)',
             borderColor: 'var(--border-secondary)',
           }}
         >
-          {partners.map(p => (
-            <button
-              key={p.id}
-              type="button"
-              role="option"
-              aria-selected={p.id === activePartnerId}
-              tabIndex={-1}
-              onClick={() => { onSelect(p.id); closeAndReturnFocus(); }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left cursor-pointer transition-colors"
-              style={{
-                color: p.id === activePartnerId ? 'var(--accent-text)' : 'var(--text-primary)',
-                backgroundColor: p.id === activePartnerId ? 'var(--bg-hover)' : 'transparent',
-              }}
-              onMouseEnter={e => { if (p.id !== activePartnerId) (e.currentTarget.style.backgroundColor = 'var(--bg-hover)'); }}
-              onMouseLeave={e => { if (p.id !== activePartnerId) (e.currentTarget.style.backgroundColor = 'transparent'); }}
-            >
-              <span
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ backgroundColor: getColorToken(p) }}
-              />
-              <span className="truncate">{p.name}</span>
-              <span className="ml-auto text-xs" style={{ color: 'var(--text-tertiary)' }}>
-                {p.tokens.length} tokens
-              </span>
-            </button>
-          ))}
+          {partners.map(p => {
+            const isCurrent = p.id === activePartnerId;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                role="option"
+                aria-selected={isCurrent}
+                tabIndex={-1}
+                onClick={() => { onSelect(p.id); closeAndReturnFocus(); }}
+                className={`flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-sm hover:bg-[var(--bg-hover)] ${
+                  isCurrent ? 'font-semibold' : ''
+                }`}
+                style={{ color: 'var(--text-primary)' }}
+              >
+                <PartnerSwatch partner={p} className="w-11 h-4" />
+                <span className="truncate flex-1">{p.name}</span>
+                {isCurrent && <Check size={14} aria-hidden="true" style={{ color: 'var(--text-primary)' }} />}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

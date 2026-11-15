@@ -58,6 +58,14 @@ export function renderForPreview(
   });
 }
 
+/**
+ * Wraps one rendered block so the preview can find, outline, and select it.
+ * Preview only: the SFMC export never includes this wrapper.
+ */
+export function wrapBlockForPreview(instanceId: string, blockHtml: string): string {
+  return `<div data-instance="${instanceId}">${blockHtml}</div>`;
+}
+
 export function renderForSFMC(
   html: string,
   partner: Partner

@@ -12,9 +12,10 @@ export function ContentFieldEditor({ label, value, onChange }: Props) {
 
   return (
     <div>
+      {/* The label is the AMPscript variable exactly as it appears in the template. */}
       <label
         htmlFor={fieldId}
-        className="block text-xs font-medium mb-1"
+        className="mb-1 block font-mono text-xs"
         style={{ color: 'var(--text-secondary)' }}
       >
         {`%%=v(@${label})=%%`}
@@ -25,14 +26,7 @@ export function ContentFieldEditor({ label, value, onChange }: Props) {
           value={value}
           onChange={e => onChange(e.target.value)}
           rows={3}
-          className="w-full text-sm"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-primary)',
-            color: 'var(--text-primary)',
-            borderRadius: '6px',
-            padding: '8px',
-          }}
+          className="block w-full"
         />
       ) : (
         <input
@@ -40,14 +34,7 @@ export function ContentFieldEditor({ label, value, onChange }: Props) {
           type="text"
           value={value}
           onChange={e => onChange(e.target.value)}
-          className="w-full text-sm"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-primary)',
-            color: 'var(--text-primary)',
-            borderRadius: '6px',
-            padding: '8px',
-          }}
+          className="block w-full"
         />
       )}
     </div>

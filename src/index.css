@@ -1,35 +1,88 @@
 @import "tailwindcss";
 
+/*
+ * Design: a proofing desk.
+ * Brand color work is judged against neutral gray, so the editor chrome is
+ * gray and ink only. The partner's palette is the one source of color on
+ * screen. Blue is reserved for selection and keyboard focus.
+ */
+@theme {
+  --font-sans: "Atkinson Hyperlegible Next Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* A dense tool, not a page: 13px base, 12px for secondary text. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.4;
+
+  /* Controls are nearly square. Only floating layers get a larger corner. */
+  --radius-md: 0.25rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.375rem;
+
+  /* Shadows are for layers that float above the desk: menus, dialogs, toasts. */
+  --shadow-lg: 0 1px 2px rgb(23 25 29 / 0.14), 0 6px 16px -6px rgb(23 25 29 / 0.28);
+  --shadow-xl: 0 1px 2px rgb(23 25 29 / 0.16), 0 12px 28px -10px rgb(23 25 29 / 0.38);
+  --shadow-2xl: 0 2px 4px rgb(23 25 29 / 0.18), 0 24px 48px -16px rgb(23 25 29 / 0.48);
+}
+
 :root {
-  --bg-primary: #0f1117;
-  --bg-secondary: #1a1d27;
-  --bg-tertiary: #242731;
-  --bg-elevated: #2a2d3a;
-  --bg-hover: #323545;
-  --border-primary: #2e3142;
-  --border-secondary: #3d4058;
-  --text-primary: #e4e6eb;
-  --text-secondary: #a0a3b1;
-  --text-tertiary: #9a9fb2; /* 4.5:1 or better on every surface above */
-  --accent-primary: #5b5ef0; /* solid fills with white text (4.9:1) */
-  --accent-primary-hover: #818cf8;
-  --accent-text: #a5b4fc; /* accent used as text or icons on dark surfaces */
-  --accent-danger: #dc2626; /* solid fills with white text (4.8:1) */
-  --accent-danger-hover: #f87171;
-  --accent-danger-text: #f87171; /* danger used as text or icons on dark surfaces */
-  --accent-success: #22c55e;
-  --accent-warning: #f59e0b;
+  /* Surfaces, darkest to lightest */
+  --booth: #d5d7db;          /* the desk the email sits on */
+  --bg-secondary: #f3f4f5;   /* side panels, toolbar, dialogs */
+  --bg-primary: #ffffff;     /* fields and wells */
+  --bg-tertiary: #ffffff;    /* rows and secondary buttons */
+  --bg-elevated: #ffffff;    /* menus */
+  --bg-hover: #e6e8eb;
+
+  /* Lines */
+  --border-primary: #cdd0d5;   /* dividers */
+  --border-secondary: #b9bdc4; /* edges of floating layers */
+  --border-input: #858a93;     /* field edges: 3:1 against white and panel */
+
+  /* Ink. Every step is 4.5:1 or better on every surface above. */
+  --text-primary: #17191d;
+  --text-secondary: #40454d;
+  --text-tertiary: #565c66;
+
+  /* Solid fills that carry white text */
+  --accent-primary: #17191d;
+  --accent-primary-hover: #2b2f36;
+  --accent-danger: #b3261e;
+  --accent-success: #176b33;
+
+  /* The same hues used as text or icons */
+  --accent-text: #0a4fd6;
+  --accent-danger-text: #b3261e;
+
+  /* Selection and keyboard focus */
+  --select: #0b57f0;
+  --select-tint: #e2eafd;
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--booth);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--select-tint);
 }
 
 /* Visible keyboard focus on every control (WCAG 2.4.7) */
 :focus-visible {
-  outline: 2px solid var(--accent-text);
+  outline: 2px solid var(--select);
   outline-offset: 2px;
 }
 
@@ -38,44 +91,53 @@ body {
   outline-offset: -2px;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-secondary);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
+button {
+  cursor: pointer;
 }
 
-/* Custom input styling for dark theme */
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Fields */
 input[type="text"],
 input[type="number"],
 input[type="url"],
 textarea,
 select {
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-input);
   color: var(--text-primary);
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 14px;
-  transition: border-color 0.15s;
+  border-radius: 0.25rem;
+  padding: 0.3125rem 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--accent-primary);
+input[type="text"]:focus-visible,
+input[type="number"]:focus-visible,
+input[type="url"]:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline-offset: 0;
+  border-color: var(--select);
 }
 
 input::placeholder,
 textarea::placeholder {
   color: var(--text-tertiary);
+}
+
+/* Numbers that sit in columns line up */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

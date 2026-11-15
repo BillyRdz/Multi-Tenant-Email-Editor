@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { CanvasInstance, EmailComponent, Partner } from '../../types';
 import { CanvasBlock } from './CanvasBlock';
-import { renderForPreview, classifyVariables } from '../../utils/templateEngine';
+import { classifyVariables } from '../../utils/templateEngine';
 
 interface Props {
   instances: CanvasInstance[];
@@ -14,6 +14,11 @@ interface Props {
   onRemoveInstance: (id: string) => void;
 }
 
+/**
+ * The email's blocks in order, as an outline. The rendered email itself is
+ * the preview in the middle of the screen; this list is where blocks are
+ * added, reordered, selected, and removed.
+ */
 export function Canvas({
   instances,
   components,
@@ -83,63 +88,49 @@ export function Canvas({
   const tokenKeys = partner.tokens.map(t => t.key);
 
   return (
-    <div
-      className="flex flex-col h-full rounded-lg border"
-      style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}
-    >
-      <div
-        className="flex items-center px-4 py-3 border-b"
-        style={{ borderColor: 'var(--border-primary)' }}
-      >
-        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+    <section className="border-b" style={{ borderColor: 'var(--border-primary)' }}>
+      <div className="flex items-baseline gap-2 px-4 pt-3.5 pb-2">
+        <h2 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           Canvas
         </h2>
-        <span className="ml-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>
+        <span className="tabular text-xs" style={{ color: 'var(--text-tertiary)' }}>
           {instances.length} block{instances.length !== 1 ? 's' : ''}
         </span>
         <span className="sr-only" role="status" aria-live="polite">{announcement}</span>
       </div>
 
       <div
-        className="flex-1 p-4 overflow-y-auto min-h-[400px]"
+        className="min-h-40 px-4 pb-4"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         onDragLeave={() => setDragOverIndex(null)}
       >
         {sortedInstances.length === 0 ? (
           <div
-            className="flex items-center justify-center h-full rounded-lg border-2 border-dashed"
-            style={{ borderColor: 'var(--border-secondary)', color: 'var(--text-tertiary)' }}
+            className="rounded border border-dashed px-4 py-6 text-center"
+            style={{ borderColor: 'var(--border-input)', color: 'var(--text-secondary)' }}
           >
-            <div className="text-center p-8">
-              <p className="text-sm font-medium mb-1">Drop components here</p>
-              <p className="text-xs">Drag from the Component Library, or use its Add buttons</p>
-            </div>
+            <p className="text-sm font-semibold">This email has no blocks yet</p>
+            <p className="mt-1 text-xs">Drag one in from the Component Library, or use its Add button.</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <ol>
             {sortedInstances.map((instance, index) => {
               const comp = components.find(c => c.id === instance.componentId);
               if (!comp) return null;
 
               const { contentVars } = classifyVariables(comp.detectedVariables, tokenKeys);
-              const renderedHtml = renderForPreview(comp.html, partner, instance.contentValues);
+              const showDropLine =
+                dragOverIndex === index && draggedInstanceId !== null && draggedInstanceId !== instance.id;
 
               return (
-                <div
+                <li
                   key={instance.id}
                   onDragOver={(e) => handleInstanceDragOver(e, index)}
+                  style={{ boxShadow: showDropLine ? '0 -2px 0 var(--select)' : undefined }}
                 >
-                  {dragOverIndex === index && draggedInstanceId && draggedInstanceId !== instance.id && (
-                    <div
-                      className="h-1 rounded-full mb-2"
-                      style={{ backgroundColor: 'var(--accent-primary)' }}
-                    />
-                  )}
                   <CanvasBlock
-                    instance={instance}
                     component={comp}
-                    renderedHtml={renderedHtml}
                     contentVarCount={contentVars.length}
                     isSelected={selectedInstanceId === instance.id}
                     onSelect={() => onSelectInstance(instance.id === selectedInstanceId ? null : instance.id)}
@@ -151,12 +142,12 @@ export function Canvas({
                     onDragStart={(e) => handleInstanceDragStart(e, instance.id)}
                     isDragging={draggedInstanceId === instance.id}
                   />
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ol>
         )}
       </div>
-    </div>
+    </section>
   );
 }
