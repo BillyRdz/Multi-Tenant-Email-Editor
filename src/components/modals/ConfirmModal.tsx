@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useModalDialog } from '../../hooks/useModalDialog';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -37,11 +38,14 @@ export function ConfirmModal({ isOpen, ...dialogProps }: ConfirmModalProps) {
 function ConfirmDialog({ title, message, onConfirm, onCancel }: Omit<ConfirmModalProps, 'isOpen'>) {
   const [userAnswer, setUserAnswer] = useState('');
   const [problem] = useState(generateMathProblem);
+  const dialogRef = useModalDialog(true, onCancel);
 
   const isCorrect = userAnswer.trim() !== '' && parseInt(userAnswer.trim(), 10) === problem.answer;
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       className="fixed inset-0 z-[100] flex items-center justify-center"
       role="dialog"
       aria-modal="true"
@@ -93,7 +97,7 @@ function ConfirmDialog({ title, message, onConfirm, onCancel }: Omit<ConfirmModa
               if (e.key === 'Enter' && isCorrect) onConfirm();
             }}
             placeholder="Your answer"
-            autoFocus
+            data-autofocus
             className="w-full text-sm rounded-md px-3 py-2"
             style={{
               backgroundColor: 'var(--bg-primary)',

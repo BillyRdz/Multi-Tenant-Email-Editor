@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 interface Props {
   label: string;
   value: string;
@@ -5,11 +7,13 @@ interface Props {
 }
 
 export function ContentFieldEditor({ label, value, onChange }: Props) {
+  const fieldId = useId();
   const isLongText = value.length > 60 || label.toLowerCase().includes('text') || label.toLowerCase().includes('message');
 
   return (
     <div>
       <label
+        htmlFor={fieldId}
         className="block text-xs font-medium mb-1"
         style={{ color: 'var(--text-secondary)' }}
       >
@@ -17,6 +21,7 @@ export function ContentFieldEditor({ label, value, onChange }: Props) {
       </label>
       {isLongText ? (
         <textarea
+          id={fieldId}
           value={value}
           onChange={e => onChange(e.target.value)}
           rows={3}
@@ -31,6 +36,7 @@ export function ContentFieldEditor({ label, value, onChange }: Props) {
         />
       ) : (
         <input
+          id={fieldId}
           type="text"
           value={value}
           onChange={e => onChange(e.target.value)}

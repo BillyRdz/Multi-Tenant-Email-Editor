@@ -47,6 +47,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Component name"
+          aria-label="Component name"
           className="text-sm font-medium flex-1"
           style={{
             backgroundColor: 'var(--bg-tertiary)',
@@ -59,6 +60,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
         <select
           value={type}
           onChange={e => setType(e.target.value)}
+          aria-label="Component type"
           className="text-sm"
           style={{
             backgroundColor: 'var(--bg-tertiary)',
@@ -92,8 +94,9 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
         {!isNew && onDelete && (
           <button
             onClick={onDelete}
+            aria-label="Delete component"
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md cursor-pointer"
-            style={{ color: 'var(--accent-danger)' }}
+            style={{ color: 'var(--accent-danger-text)' }}
           >
             <Trash2 size={14} />
           </button>
@@ -107,7 +110,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           <span
             key={v}
             className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff', opacity: 0.7 }}
+            style={{ backgroundColor: 'var(--accent-primary)', color: '#fff' }}
           >
             {v} (style)
           </span>
@@ -116,7 +119,7 @@ export function ComponentEditor({ component, onSave, onCreate, onDelete, onCance
           <span
             key={v}
             className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-success)', color: '#fff', opacity: 0.8 }}
+            style={{ backgroundColor: 'var(--accent-success)', color: 'var(--bg-primary)' }}
           >
             {v} (content)
           </span>

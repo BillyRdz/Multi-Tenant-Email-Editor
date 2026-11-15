@@ -26,6 +26,7 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
           <input
             type="text"
             placeholder="e.g. Summer Promo v2"
+            aria-label="Version name"
             value={versionName}
             onChange={e => setVersionName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSave()}
@@ -65,16 +66,18 @@ export function VersionManager({ versions, onSave, onLoad, onDelete }: Props) {
                 <button
                   onClick={() => onLoad(v.id)}
                   className="cursor-pointer p-1 rounded transition-colors"
-                  style={{ color: 'var(--accent-primary)' }}
+                  style={{ color: 'var(--accent-text)' }}
                   title="Load version"
+                  aria-label={`Load version ${v.name}`}
                 >
                   <Upload size={14} />
                 </button>
                 <button
                   onClick={() => onDelete(v.id)}
                   className="cursor-pointer p-1 rounded transition-colors"
-                  style={{ color: 'var(--accent-danger)' }}
+                  style={{ color: 'var(--accent-danger-text)' }}
                   title="Delete version"
+                  aria-label={`Delete version ${v.name}`}
                 >
                   <Trash2 size={14} />
                 </button>

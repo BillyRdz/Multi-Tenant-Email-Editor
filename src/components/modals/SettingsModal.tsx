@@ -1,6 +1,7 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, useId, lazy, Suspense } from 'react';
 import { X, Settings, RotateCcw } from 'lucide-react';
 import { defaultPreviewWrapper } from '../../data/defaultPreviewWrapper';
+import { useModalDialog } from '../../hooks/useModalDialog';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then(m => ({ default: m.default })));
 
@@ -13,6 +14,8 @@ interface Props {
 
 export function SettingsModal({ isOpen, onClose, previewWrapper, onUpdatePreviewWrapper }: Props) {
   const [html, setHtml] = useState(previewWrapper);
+  const dialogRef = useModalDialog(isOpen, onClose);
+  const titleId = useId();
 
   if (!isOpen) return null;
 
@@ -26,7 +29,14 @@ export function SettingsModal({ isOpen, onClose, previewWrapper, onUpdatePreview
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      ref={dialogRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={onClose} />
       <div
         className="relative w-full max-w-4xl max-h-[85vh] flex flex-col rounded-xl shadow-2xl overflow-hidden"
@@ -35,10 +45,10 @@ export function SettingsModal({ isOpen, onClose, previewWrapper, onUpdatePreview
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-primary)' }}>
           <div className="flex items-center gap-2">
-            <Settings size={18} style={{ color: 'var(--accent-primary)' }} />
-            <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Settings</span>
+            <Settings size={18} style={{ color: 'var(--accent-text)' }} />
+            <h2 id={titleId} className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Settings</h2>
           </div>
-          <button onClick={onClose} className="cursor-pointer p-1" style={{ color: 'var(--text-tertiary)' }}>
+          <button onClick={onClose} aria-label="Close settings" className="cursor-pointer p-1" style={{ color: 'var(--text-tertiary)' }}>
             <X size={18} />
           </button>
         </div>
@@ -46,7 +56,7 @@ export function SettingsModal({ isOpen, onClose, previewWrapper, onUpdatePreview
         {/* Content */}
         <div className="p-6 space-y-4">
           <div>
-            <h4 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Preview Wrapper HTML</h4>
+            <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Preview Wrapper HTML</h3>
             <p className="text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>
               The HTML document wrapper for preview and export. Use {'%%CANVAS_CONTENT%%'} as the placeholder for canvas blocks.
             </p>

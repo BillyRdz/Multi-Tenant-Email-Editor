@@ -102,6 +102,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
             value={token.key}
             onChange={e => updateToken(idx, 'key', e.target.value)}
             placeholder="tokenKey"
+            aria-label={`Token ${idx + 1} key`}
             className="text-xs font-mono"
             style={{
               backgroundColor: 'var(--bg-primary)',
@@ -117,6 +118,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
                 type="color"
                 value={token.value}
                 onChange={e => updateToken(idx, 'value', e.target.value)}
+                aria-label={`${token.key || `Token ${idx + 1}`} color picker`}
                 className="w-6 h-6 rounded border cursor-pointer shrink-0"
                 style={{ borderColor: 'var(--border-primary)' }}
               />
@@ -126,6 +128,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
               value={token.value}
               onChange={e => updateToken(idx, 'value', e.target.value)}
               placeholder="value"
+              aria-label={`${token.key || `Token ${idx + 1}`} value`}
               className="flex-1 text-xs font-mono"
               style={{
                 backgroundColor: 'var(--bg-primary)',
@@ -139,8 +142,9 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
           <span />
           <button
             onClick={() => setPendingDeleteIndex(idx)}
+            aria-label={`Delete token ${token.key || idx + 1}`}
             className="cursor-pointer p-1 rounded"
-            style={{ color: 'var(--accent-danger)' }}
+            style={{ color: 'var(--accent-danger-text)' }}
           >
             <Trash2 size={12} />
           </button>
@@ -153,7 +157,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
           style={{
             backgroundColor: 'rgba(239, 68, 68, 0.1)',
             border: '1px solid var(--accent-danger)',
-            color: 'var(--accent-danger)',
+            color: 'var(--accent-danger-text)',
           }}
           role="alert"
         >
@@ -166,7 +170,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
         <button
           onClick={addToken}
           className="flex items-center gap-1 text-xs cursor-pointer"
-          style={{ color: 'var(--accent-primary)' }}
+          style={{ color: 'var(--accent-text)' }}
         >
           <Plus size={12} />
           Add Token
@@ -193,7 +197,7 @@ export function PartnerTokenEditor({ tokens, onSave }: Props) {
               className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-md transition-colors"
               style={{
                 backgroundColor: canSave ? 'var(--accent-success)' : 'var(--bg-tertiary)',
-                color: canSave ? '#fff' : 'var(--text-tertiary)',
+                color: canSave ? 'var(--bg-primary)' : 'var(--text-tertiary)',
                 cursor: canSave ? 'pointer' : 'not-allowed',
                 opacity: canSave ? 1 : 0.6,
               }}

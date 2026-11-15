@@ -26,6 +26,8 @@ export function Canvas({
 }: Props) {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedInstanceId, setDraggedInstanceId] = useState<string | null>(null);
+  // Read out by screen readers after a block is moved with the arrow buttons.
+  const [announcement, setAnnouncement] = useState('');
 
   const sortedInstances = [...instances].sort((a, b) => a.order - b.order);
 
@@ -68,6 +70,16 @@ export function Canvas({
     setDragOverIndex(index);
   };
 
+  // Keyboard path for reordering: swap a block with its neighbor.
+  const moveInstance = (index: number, direction: -1 | 1, name: string) => {
+    const target = index + direction;
+    if (target < 0 || target >= sortedInstances.length) return;
+    const ids = sortedInstances.map(i => i.id);
+    [ids[index], ids[target]] = [ids[target], ids[index]];
+    onReorder(ids);
+    setAnnouncement(`${name} moved to position ${target + 1} of ${ids.length}`);
+  };
+
   const tokenKeys = partner.tokens.map(t => t.key);
 
   return (
@@ -79,12 +91,13 @@ export function Canvas({
         className="flex items-center px-4 py-3 border-b"
         style={{ borderColor: 'var(--border-primary)' }}
       >
-        <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
           Canvas
-        </h3>
+        </h2>
         <span className="ml-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>
           {instances.length} block{instances.length !== 1 ? 's' : ''}
         </span>
+        <span className="sr-only" role="status" aria-live="polite">{announcement}</span>
       </div>
 
       <div
@@ -100,7 +113,7 @@ export function Canvas({
           >
             <div className="text-center p-8">
               <p className="text-sm font-medium mb-1">Drop components here</p>
-              <p className="text-xs">Drag from the Component Library on the left</p>
+              <p className="text-xs">Drag from the Component Library, or use its Add buttons</p>
             </div>
           </div>
         ) : (
@@ -131,6 +144,10 @@ export function Canvas({
                     isSelected={selectedInstanceId === instance.id}
                     onSelect={() => onSelectInstance(instance.id === selectedInstanceId ? null : instance.id)}
                     onRemove={() => onRemoveInstance(instance.id)}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < sortedInstances.length - 1}
+                    onMoveUp={() => moveInstance(index, -1, comp.name)}
+                    onMoveDown={() => moveInstance(index, 1, comp.name)}
                     onDragStart={(e) => handleInstanceDragStart(e, instance.id)}
                     isDragging={draggedInstanceId === instance.id}
                   />

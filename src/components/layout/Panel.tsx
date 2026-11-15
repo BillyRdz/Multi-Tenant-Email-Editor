@@ -16,9 +16,9 @@ export function Panel({ title, children, actions }: Props) {
         className="flex items-center justify-between px-4 py-3 border-b"
         style={{ borderColor: 'var(--border-primary)' }}
       >
-        <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
           {title}
-        </h3>
+        </h2>
         {actions}
       </div>
       <div className="p-4">
